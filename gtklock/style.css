@@ -1,0 +1,99 @@
+/* Cyberpunk palette, matches ~/.config/sway/cyberpunk and swaylock config */
+@define-color bg      #040A10;
+@define-color fg      #E8FBFD;
+@define-color magenta #E455AE;
+@define-color cyan    #5DF4FE;
+@define-color teal    #1AC5B0;
+@define-color red     #FB3048;
+@define-color yellow  #FDF500;
+@define-color purple  #9370DB;
+
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  color: @fg;
+}
+
+window {
+  background-color: @bg;
+  background-size: cover;
+  background-position: center;
+}
+
+#window-box {
+  padding: 36px 48px;
+  border-radius: 14px;
+  border: 2px solid @magenta;
+  background-color: alpha(@bg, 0.80);
+  box-shadow: 0 0 24px alpha(@magenta, 0.45);
+}
+
+#clock-label {
+  font-size: 72px;
+  font-weight: bold;
+  color: @cyan;
+  text-shadow: 0 0 12px alpha(@cyan, 0.6);
+}
+
+#date-label {
+  font-size: 18px;
+  color: @purple;
+  margin-bottom: 20px;
+}
+
+#input-label {
+  font-size: 16px;
+  color: @magenta;
+  margin-right: 8px;
+}
+
+/* The password box: shows a dot per typed character */
+#input-field {
+  min-width: 300px;
+  min-height: 40px;
+  padding: 4px 14px;
+  font-size: 20px;
+  color: @cyan;
+  caret-color: @magenta;
+  background-color: alpha(@bg, 0.9);
+  background-image: none;
+  border: 2px solid @purple;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+#input-field:focus {
+  border-color: @cyan;
+  box-shadow: 0 0 10px alpha(@cyan, 0.5);
+}
+
+#input-field:disabled {          /* while checking the password */
+  border-color: @teal;
+  color: @teal;
+}
+
+#unlock-button {
+  margin-left: 8px;
+  padding: 4px 16px;
+  font-weight: bold;
+  color: @bg;
+  background-image: none;
+  background-color: @magenta;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+#unlock-button:hover  { background-color: @cyan; }
+#unlock-button:active { background-color: @teal; }
+
+#error-label {                   /* wrong password */
+  color: @red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#warning-label {                 /* caps lock */
+  color: @yellow;
+  font-weight: bold;
+  margin-top: 10px;
+}

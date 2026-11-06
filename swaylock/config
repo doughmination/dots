@@ -1,0 +1,53 @@
+# Cyberpunk palette, matches ~/.config/sway/cyberpunk
+daemonize
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+indicator-idle-visible
+hide-keyboard-layout
+
+# lock-screen passes a blurred copy of the wallpaper if imagemagick is installed;
+# this is the fallback
+image=/home/clove/img/background.png
+scaling=fill
+color=040A10
+
+font=JetBrainsMono Nerd Font
+font-size=22
+indicator-radius=110
+indicator-thickness=9
+
+# Idle
+inside-color=040A10cc
+ring-color=E455AEff
+line-color=00000000
+separator-color=00000000
+text-color=E8FBFDff
+key-hl-color=5DF4FEff
+bs-hl-color=FB3048ff
+
+# Checking password
+inside-ver-color=040A10cc
+ring-ver-color=1AC5B0ff
+line-ver-color=00000000
+text-ver-color=1AC5B0ff
+
+# Wrong password
+inside-wrong-color=710100cc
+ring-wrong-color=FB3048ff
+line-wrong-color=00000000
+text-wrong-color=FB3048ff
+
+# Cleared input
+inside-clear-color=040A10cc
+ring-clear-color=9370DBff
+line-clear-color=00000000
+text-clear-color=9370DBff
+
+# Caps lock on
+inside-caps-lock-color=040A10cc
+ring-caps-lock-color=FDF500ff
+line-caps-lock-color=00000000
+text-caps-lock-color=FDF500ff
+caps-lock-key-hl-color=5DF4FEff
+caps-lock-bs-hl-color=FB3048ff

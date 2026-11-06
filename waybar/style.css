@@ -1,0 +1,160 @@
+/* Cyberpunk palette, matches ~/.config/sway/cyberpunk */
+@define-color base     #040A10;
+@define-color overlay0 #272932;
+@define-color overlay1 #52545B;
+@define-color text     #E8FBFD;
+@define-color pink     #E455AE;
+@define-color mauve    #9370DB;
+@define-color teal     #1AC5B0;
+@define-color sky      #5DF4FE;
+@define-color yellow   #FDF500;
+@define-color green    #28C775;
+@define-color red      #FB3048;
+@define-color orange   #FF8C1A;
+@define-color blue     #2E7DFF;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+}
+
+window#waybar {
+  background: alpha(@base, 0.45);
+  border: 1px solid alpha(@pink, 0.6);
+  border-radius: 16px;
+  color: @text;
+}
+
+window#waybar > box { padding: 0 4px; }
+
+tooltip {
+  background: alpha(@base, 0.92);
+  border: 1px solid @pink;
+  border-radius: 10px;
+}
+
+/* Every module is its own glass pill */
+#custom-launcher,
+#custom-decor,
+#workspaces,
+#mode,
+#scratchpad,
+#mpris,
+#clock,
+#memory,
+#cpu,
+#wireplumber,
+#backlight,
+#network,
+#bluetooth,
+#custom-battery,
+#tray,
+#custom-power {
+  background: alpha(@base, 0.70);
+  border: 1px solid alpha(@overlay1, 0.6);
+  border-radius: 12px;
+  padding: 0 12px;
+  margin: 2px 0;
+}
+
+#custom-launcher {
+  color: #478061;
+  font-size: 17px;
+  padding: 0 14px 0 12px;
+}
+
+#custom-decor {
+  font-size: 14px;
+  padding: 0 10px;
+  border-color: alpha(@red, 0.45);
+}
+
+#workspaces { padding: 0 4px; }
+
+#workspaces button {
+  color: @overlay1;
+  background: transparent;
+  padding: 0 8px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  transition: all 150ms ease;
+}
+
+#workspaces button:hover {
+  color: @text;
+  background: alpha(@overlay0, 0.8);
+  box-shadow: none;
+}
+
+#workspaces button.focused {
+  color: @base;
+  background: @pink;
+  box-shadow: 0 0 8px alpha(@pink, 0.7);
+}
+
+#workspaces button.urgent {
+  color: @base;
+  background: @red;
+}
+
+#mode {
+  color: @base;
+  background: @yellow;
+}
+
+#scratchpad { color: @mauve; }
+#mpris      { color: @teal; }
+
+#clock {
+  color: @sky;
+  border-color: alpha(@sky, 0.5);
+  padding: 0 16px;
+}
+
+#memory              { color: @mauve; }
+#cpu                 { color: @sky; }
+#memory.warning,
+#cpu.warning          { color: @yellow; }
+#memory.critical,
+#cpu.critical         { color: @red; }
+#wireplumber          { color: @pink; }
+#wireplumber.muted    { color: @overlay1; }
+#backlight            { color: @yellow; }
+#network              { color: @teal; }
+#network.disconnected { color: @overlay1; }
+#bluetooth            { color: @blue; }
+#bluetooth.off,
+#bluetooth.disabled   { color: @overlay1; }
+
+#custom-battery           { color: @green; }
+#custom-battery.charging,
+#custom-battery.plugged   { color: @sky; }
+#custom-battery.warning   { color: @yellow; }
+#custom-battery.powersave { color: @orange; border-color: alpha(@orange, 0.5); }
+#custom-battery.performance { color: @pink; border-color: alpha(@pink, 0.5); }
+
+@keyframes blink {
+  to { background: @red; color: @base; }
+}
+
+#custom-battery.critical {
+  color: @red;
+  animation: blink 1s steps(2) infinite alternate;
+}
+
+#tray > .needs-attention { background: alpha(@red, 0.6); }
+
+#custom-power {
+  color: @red;
+  font-size: 15px;
+  padding: 0 14px 0 12px;
+}
+
+#custom-power:hover,
+#custom-launcher:hover {
+  background: alpha(@overlay0, 0.9);
+}

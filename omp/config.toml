@@ -1,0 +1,163 @@
+# omp/config.toml
+
+console_title_template = '{{ .Shell }} in {{ .Folder }}'
+version = 3
+final_space = true
+
+# Sourced from ~/.config/kitty/current-theme.conf (Cyberpunk)
+[palette]
+  bg = '#040A10'
+  fg = '#E8FBFD'
+  hotPink = '#E455AE'
+  magenta = '#CB1DCD'
+  red = '#FB3048'
+  brightRed = '#FF5048'
+  violet = '#9370DB'
+  ice = '#AE94E4'
+  cyan = '#1AC5B0'
+  teal = '#5DF4FE'
+  green = '#28C775'
+  mint = '#5ED598'
+  amber = '#FDF500'
+  lime = '#CFED58'
+  grey = '#52545B'
+  slate = '#7D7F84'
+
+[secondary_prompt]
+  template = '❯❯ '
+  foreground = 'p:violet'
+  background = 'transparent'
+
+[transient_prompt]
+  template = '❯ '
+  background = 'transparent'
+  foreground_templates = [
+    '{{ if gt .Code 0 }}p:red{{ end }}',
+    '{{ if eq .Code 0 }}p:cyan{{ end }}',
+  ]
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  # user@host
+  [[blocks.segments]]
+    type = 'session'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = ' {{ if .Root }}⚡ {{ end }}{{ .UserName }}@{{ .HostName }} '
+    foreground = 'p:bg'
+    background = 'p:hotPink'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+
+  # Working directory
+  [[blocks.segments]]
+    type = 'path'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = ' {{ .Path }} '
+    foreground = 'p:bg'
+    background = 'p:violet'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      style = 'full'
+      home_icon = '~'
+      folder_separator_icon = '/'
+
+  # Git branch, dirty flag, ahead/behind counts
+  [[blocks.segments]]
+    type = 'git'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }}{{ if gt .Behind 0 }} ⇣{{ .Behind }}{{ end }}{{ if gt .Ahead 0 }} ⇡{{ .Ahead }}{{ end }} '
+    foreground = 'p:bg'
+    background = 'p:cyan'
+    background_templates = [
+      '{{ if or (.Working.Changed) (.Staging.Changed) }}p:amber{{ end }}',
+      '{{ if gt .Behind 0 }}p:teal{{ end }}',
+      '{{ if gt .Ahead 0 }}p:teal{{ end }}',
+    ]
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      branch_icon = ' '
+      commit_icon = '@'
+      fetch_status = true
+      fetch_upstream_icon = true
+
+  # Python, only inside Python projects
+  [[blocks.segments]]
+    type = 'python'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = '  {{ if .Venv }}{{ .Venv }}{{ else }}{{ .Full }}{{ end }} '
+    foreground = 'p:bg'
+    background = 'p:green'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      display_mode = 'files'
+      fetch_virtual_env = true
+
+  # Node, only inside Node projects
+  [[blocks.segments]]
+    type = 'node'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = '  {{ .Full }} '
+    foreground = 'p:bg'
+    background = 'p:mint'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      display_mode = 'files'
+      fetch_package_manager = false
+
+  # Command duration, shown past 5s
+  [[blocks.segments]]
+    type = 'executiontime'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = '  {{ .FormattedMs }} '
+    foreground = 'p:bg'
+    background = 'p:lime'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      threshold = 5000
+      style = 'austin'
+
+  # Exit code, shown only on failure
+  [[blocks.segments]]
+    type = 'status'
+    style = 'powerline'
+    powerline_symbol = ''
+    template = '  {{ .Code }} '
+    foreground = 'p:fg'
+    background = 'p:red'
+
+    [blocks.segments.properties]
+      cache_duration = 'none'
+      always_enabled = false
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    type = 'text'
+    style = 'plain'
+    template = '❯'
+    background = 'transparent'
+    foreground_templates = [
+      '{{ if gt .Code 0 }}p:red{{ end }}',
+      '{{ if eq .Code 0 }}p:cyan{{ end }}',
+    ]
+
+    [blocks.segments.properties]
+      cache_duration = 'none'

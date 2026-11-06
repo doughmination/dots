@@ -1,0 +1,52 @@
+# Allow-list: ignore everything in ~/.config, then opt specific
+# configs back in. New apps (and the secrets they write) stay private
+# until you add them below on purpose.
+/*
+
+# --- Repo files ---
+!/.gitignore
+!/README.md
+
+# --- Desktop: sway + bar + launcher + notifications + lock ---
+!/sway/
+!/waybar/
+!/fuzzel/
+!/mako/
+!/swaylock/
+!/gtklock/
+
+# --- Terminal + prompt ---
+!/kitty/
+!/omp/
+!/hyfetch.json
+
+# --- Theming ---
+!/gtk-3.0/
+!/gtk-4.0/
+!/gtkrc
+!/gtkrc-2.0
+!/xsettingsd/
+
+# --- Monitors (they save configs here once you change a setting) ---
+!/btop/
+!/htop/
+
+# --- Never commit these, even inside allowed folders ---
+*.bak
+*.pre-*
+*.orig
+*.swp
+*~
+.DS_Store
+# GTK file-chooser bookmarks list your folders and network shares
+/gtk-3.0/bookmarks
+# btop/htop write logs and runtime state next to their configs
+/btop/btop.log
+
+# Kept private on purpose (already ignored by /* above):
+#   gh/                 GitHub CLI login token
+#   mozilla/            Firefox profile: history, cookies, saved passwords
+#   dconf/              GNOME settings database, can hold recent files and accounts
+#   pulse/              audio cookie
+#   libaccounts-glib/   online accounts
+#   session/, ibus/, go/, k* and plasma* files: KDE/session state and history

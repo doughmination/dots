@@ -1,0 +1,237 @@
+include cyberpunk
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+set $term kitty
+set $browser firefox
+set $menu fuzzel
+set $lock ~/.local/bin/lock-screen
+set $ss ~/.local/bin/screenshot
+set $files kitty -e yazi
+set $wallpaper /home/clove/img/background.png
+
+# Bar, launcher, power menu, notifications, clipboard
+set $launcher $menu
+set $bar pkill -SIGUSR1 waybar
+set $logout ~/.local/bin/powermenu
+set $notification makoctl restore
+set $clipboard cliphist list | $menu --dmenu --prompt "clip " | cliphist decode | wl-copy
+set $clipwipe cliphist wipe
+
+### Startup
+#
+exec waybar
+exec mako
+exec --no-startup-id autotiling
+
+# Idle: lock after 5 min, screen off after 10, always lock before sleep
+exec swayidle -w \
+    timeout 300 '~/.local/bin/lock-screen' \
+    timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep '~/.local/bin/lock-screen'
+
+# Polkit authentication agent (needed for fprintd enroll, udisks, etc.)
+exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1
+
+# Secret service (GCM's credentialStore=secretservice needs this running)
+exec --no-startup-id gnome-keyring-daemon --start --components=secrets,ssh,pkcs11
+
+# Clipboard history (text + images)
+exec --no-startup-id wl-paste --type text --watch cliphist store
+exec --no-startup-id wl-paste --type image --watch cliphist store
+
+exec /usr/bin/pipewire
+
+# Cursor Style
+seat seat0 xcursor_theme sandrone-linux 28
+
+### Input
+#
+input type:keyboard {
+    xkb_layout "gb"
+}
+
+### Output configuration
+#
+output eDP-1 scale 1
+output * bg $wallpaper fill
+
+focus_follows_mouse yes
+
+### SwayFX
+#
+corner_radius 15
+
+# Window background blur
+blur on
+blur_xray off
+blur_passes 3
+blur_radius 5
+
+# Oversaturated, slightly crushed CRT look
+blur_brightness 0.95
+blur_contrast 1.15
+blur_saturation 1.35
+blur_noise 0.02
+
+# Neon bleed under every window
+shadows enable
+shadows_on_csd enable
+shadow_blur_radius 28
+shadow_offset 0 0
+shadow_color #E455AECC
+shadow_inactive_color #1AC5B055
+
+# Glass treatment for the bar, launcher and notifications
+layer_effects "waybar" "blur enable; blur_ignore_transparent enable; shadows enable; corner_radius 16"
+layer_effects "launcher" "blur enable; shadows enable; corner_radius 16"
+layer_effects "notifications" "blur enable; shadows enable; corner_radius 16"
+
+# Inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
+default_dim_inactive 0.17
+dim_inactive_colors.unfocused #000000FF
+dim_inactive_colors.urgent #710100FF
+
+scratchpad_minimize disable
+
+### Colors
+#
+# target                 title     bg    text   indicator  border
+client.focused           $pink     $base $text  $pink      $pink
+client.focused_inactive  $overlay0 $base $text  $overlay0  $overlay0
+client.unfocused         $overlay0 $base $text  $overlay0  $overlay0
+client.urgent            $red      $base $peach $red       $red
+client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
+client.background        $base
+
+### Key bindings
+#
+# Basics:
+bindsym $mod+Return exec $term
+bindsym Ctrl+Mod1+t exec $term
+bindsym $mod+q kill
+bindsym $mod+space exec $launcher
+bindsym $mod+f exec $browser
+bindsym $mod+b exec $bar
+bindsym $mod+e exec $files
+bindsym $mod+Mod1+l exec $lock
+bindsym $mod+n exec $notification
+bindsym $mod+v exec $clipboard
+bindsym $mod+Shift+v exec $clipwipe
+# $mod+grave (dashboard) is unbound for now.
+
+floating_modifier $mod normal
+
+bindsym $mod+Shift+r reload
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym Ctrl+Mod1+Delete exec $logout
+
+# Moving around:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Workspaces:
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+
+bindsym $mod+Mod1+1 move container to workspace number 1
+bindsym $mod+Mod1+2 move container to workspace number 2
+bindsym $mod+Mod1+3 move container to workspace number 3
+bindsym $mod+Mod1+4 move container to workspace number 4
+bindsym $mod+Mod1+5 move container to workspace number 5
+bindsym $mod+Mod1+6 move container to workspace number 6
+bindsym $mod+Mod1+7 move container to workspace number 7
+bindsym $mod+Mod1+8 move container to workspace number 8
+bindsym $mod+Mod1+9 move container to workspace number 9
+
+bindsym $mod+Ctrl+Left workspace prev_on_output
+bindsym $mod+Ctrl+Right workspace next_on_output
+
+# Layout stuff:
+bindsym $mod+w floating toggle
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+mode "resize" {
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Laptop Lid
+bindswitch lid:on exec --no-startup-id $lock
+
+# Volume
+bindsym XF86AudioRaiseVolume        exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.5
+bindsym XF86AudioLowerVolume        exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05- -l 1.0
+bindsym XF86AudioMute               exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute            exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym Shift+XF86AudioRaiseVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01+ -l 1.5
+bindsym Shift+XF86AudioLowerVolume  exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01- -l 1.0
+
+# Brightness
+bindsym XF86MonBrightnessUp         exec brightnessctl -q s 5%+
+bindsym XF86MonBrightnessDown       exec brightnessctl -q s 5%-
+bindsym $mod+o exec brightnessctl --device='tpacpi::kbd_backlight' set 1-
+bindsym $mod+p exec brightnessctl --device='tpacpi::kbd_backlight' set +1
+
+# Screenshots
+bindsym Print exec $ss -c
+bindsym Ctrl+Shift+Print exec $ss -s -c
+bindsym Ctrl+Print exec $ss
+bindsym Shift+Print exec $ss -s
+# Same bind starts and stops the recording
+bindsym Ctrl+Alt+Print exec $ss -r
+
+# Music
+bindsym $mod+a exec playerctl previous
+bindsym $mod+d exec playerctl next
+bindsym $mod+s exec playerctl play-pause
+
+# Custom Apps
+bindsym $mod+z exec flatpak run org.equicord.equibop
+bindsym $mod+c exec flatpak run com.vscodium.codium
+
+### Window Rules
+#
+default_border pixel 3
+gaps inner 5
+gaps outer 12
+
+# Opacity
+for_window [all] opacity set 0.75
+for_window [app_id="gimp*"] opacity set 1.0
+for_window [app_id="krita*"] opacity set 1.0
+for_window [app_id="org.inkscape.Inkscape"] opacity set 1.0
+for_window [app_id="virt-manager"] opacity set 1.0
+for_window [app_id="com.obsproject.Studio"] opacity set 1.0
+
+# Blur
+for_window [app_id="gimp*"] blur disable
+for_window [class="krita*"] blur disable
+for_window [app_id="org.inkscape.Inkscape"] blur disable
+for_window [app_id="virt-manager"] blur disable
+for_window [app_id="com.obsproject.Studio"] blur disable
+
+include /etc/sway/config.d/*

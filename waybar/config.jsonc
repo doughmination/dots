@@ -1,0 +1,143 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "margin-top": 8,
+  "margin-left": 12,
+  "margin-right": 12,
+  "spacing": 6,
+  "reload_style_on_change": true,
+
+  "modules-left": ["custom/launcher", "custom/decor", "sway/workspaces", "sway/mode", "sway/scratchpad", "mpris"],
+  "modules-center": ["clock"],
+  "modules-right": ["memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "custom/power"],
+
+  "custom/launcher": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "fuzzel"
+  },
+
+  "custom/decor": {
+    "format": "<span color='#FB3048'></span>",
+    "rotate": 90,
+    "tooltip": false
+  },
+
+  "sway/workspaces": {
+    "all-outputs": true,
+    "format": "{name}"
+  },
+
+  "sway/mode": {
+    "format": "󰩨 {}"
+  },
+
+  "sway/scratchpad": {
+    "format": "󰖲 {count}",
+    "show-empty": false,
+    "tooltip-format": "{app}: {title}"
+  },
+
+  "mpris": {
+    "format": "{status_icon} {dynamic}",
+    "dynamic-order": ["title", "artist"],
+    "dynamic-len": 40,
+    "status-icons": { "playing": "󰏤", "paused": "󰐊", "stopped": "󰓛" },
+    "on-click": "playerctl play-pause",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous"
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "weeks-pos": "left",
+      "format": {
+        "months": "<span color='#5DF4FE'><b>{}</b></span>",
+        "weekdays": "<span color='#1AC5B0'><b>{}</b></span>",
+        "weeks": "<span color='#52545B'>W{}</span>",
+        "today": "<span color='#E455AE'><b><u>{}</u></b></span>"
+      }
+    }
+  },
+
+  "memory": {
+    "interval": 5,
+    "format": "󰍛 {percentage}%",
+    "tooltip-format": "RAM {used:0.1f} / {total:0.1f} GiB\nSwap {swapUsed:0.1f} / {swapTotal:0.1f} GiB",
+    "states": { "warning": 75, "critical": 90 },
+    "on-click": "kitty -e btop"
+  },
+
+  "cpu": {
+    "interval": 3,
+    "format": "󰻠 {usage}%",
+    "states": { "warning": 75, "critical": 90 },
+    "on-click": "kitty -e btop"
+  },
+
+  "wireplumber": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-icons": ["󰕿", "󰖀", "󰕾"],
+    "scroll-step": 5,
+    "max-volume": 100,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-middle": "pavucontrol"
+  },
+
+  "backlight": {
+    "device": "amdgpu_bl0",
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "on-click": "[ $(brightnessctl -m | cut -d, -f4 | tr -d %) -le 15 ] && brightnessctl -q s 100% || brightnessctl -q s 15%",
+    "on-scroll-up": "brightnessctl -q s 5%+",
+    "on-scroll-down": "brightnessctl -q s 5%-"
+  },
+
+  "network": {
+    "format-wifi": "󰤨 {essid}",
+    "format-ethernet": "󰈀 wired",
+    "format-disconnected": "󰤭 offline",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}\n {bandwidthDownBytes}   {bandwidthUpBytes}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "on-click": "~/.local/bin/net-toggle",
+    "on-click-right": "kitty -e nmtui"
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "",
+    "format-connected": "󰂱 {device_alias}",
+    "tooltip-format-connected": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "~/.local/bin/bt-toggle",
+    "on-click-middle": "kitty -e bluetui"
+  },
+
+  "custom/battery": {
+    "exec": "~/.local/bin/waybar-battery",
+    "return-type": "json",
+    "interval": 30,
+    "signal": 8,
+    "on-click": "~/.local/bin/waybar-battery saver",
+    "on-click-right": "~/.local/bin/waybar-battery performance",
+    "on-click-middle": "~/.local/bin/waybar-battery menu"
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  "custom/power": {
+    "format": "󰐥",
+    "tooltip": false,
+    "on-click": "~/.local/bin/powermenu"
+  }
+}
