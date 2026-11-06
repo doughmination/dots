@@ -1,0 +1,42 @@
+# Clockwork palette, sampled from ~/img/background.png
+# Deep-space navy, glowing gear cyan, ribbon crimson, gold trim, ivory.
+# Every themed app (waybar, kitty, fuzzel, mako, gtklock, swaylock, omp)
+# uses these same hex values.
+
+# Space (backgrounds, darkest to lightest)
+set $crust    #020409ff
+set $mantle   #03070Fff
+set $base     #050A14ff
+set $surface0 #0E1828ff
+set $surface1 #16233Aff
+set $surface2 #1E2C42ff
+set $overlay0 #2A3A52ff
+set $overlay1 #4A5A72ff
+set $overlay2 #6B7A90ff
+
+# Ivory and silver (text)
+set $subtext0 #8A9AB0ff
+set $subtext1 #B9C2CEff
+set $text     #E9E4DFff
+
+# Gear glow (main accent)
+set $glow     #5FD4F0ff
+set $frost    #9EE8F8ff
+set $sky      #6AA6E8ff
+set $blue     #4A8FE0ff
+set $navy     #14335Aff
+
+# Ribbons (alerts)
+set $crimson  #C8283Eff
+set $scarlet  #E0485Cff
+set $wine     #5A0F1Cff
+set $rose     #D7718Fff
+
+# Trim (highlights and warnings)
+set $gold     #D4B072ff
+set $yellow   #EBCB6Bff
+set $amber    #E8964Aff
+set $peach    #F2C29Cff
+
+# Not in the art; terminals and "ok" states need a green
+set $jade     #5CC8A0ff

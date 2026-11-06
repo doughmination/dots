@@ -19,7 +19,7 @@
   },
 
   "custom/decor": {
-    "format": "<span color='#FB3048'></span>",
+    "format": "<span color='#E0485C'></span>",
     "rotate": 90,
     "tooltip": false
   },
@@ -57,10 +57,10 @@
       "mode": "month",
       "weeks-pos": "left",
       "format": {
-        "months": "<span color='#5DF4FE'><b>{}</b></span>",
-        "weekdays": "<span color='#1AC5B0'><b>{}</b></span>",
-        "weeks": "<span color='#52545B'>W{}</span>",
-        "today": "<span color='#E455AE'><b><u>{}</u></b></span>"
+        "months": "<span color='#5FD4F0'><b>{}</b></span>",
+        "weekdays": "<span color='#D4B072'><b>{}</b></span>",
+        "weeks": "<span color='#4A5A72'>W{}</span>",
+        "today": "<span color='#E0485C'><b><u>{}</u></b></span>"
       }
     }
   },

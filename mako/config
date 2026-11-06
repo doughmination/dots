@@ -1,9 +1,9 @@
-# Cyberpunk palette, matches ~/.config/sway/cyberpunk
+# Clockwork palette, matches ~/.config/sway/clockwork
 font=JetBrainsMono Nerd Font 11
-background-color=#040A10D9
-text-color=#E8FBFD
-border-color=#E455AE
-progress-color=over #331319
+background-color=#050A14D9
+text-color=#E9E4DF
+border-color=#5FD4F0
+progress-color=over #14335A
 border-size=2
 border-radius=14
 padding=12
@@ -18,11 +18,11 @@ layer=overlay
 format=<b>%s</b>\n%b
 
 [urgency=low]
-border-color=#1AC5B0
+border-color=#4A5A72
 
 [urgency=critical]
-border-color=#FB3048
-background-color=#710100D9
+border-color=#E0485C
+background-color=#5A0F1CD9
 default-timeout=0
 
 [mode=do-not-disturb]

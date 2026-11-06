@@ -1,17 +1,22 @@
-/* Cyberpunk palette, matches ~/.config/sway/cyberpunk */
-@define-color base     #040A10;
-@define-color overlay0 #272932;
-@define-color overlay1 #52545B;
-@define-color text     #E8FBFD;
-@define-color pink     #E455AE;
-@define-color mauve    #9370DB;
-@define-color teal     #1AC5B0;
-@define-color sky      #5DF4FE;
-@define-color yellow   #FDF500;
-@define-color green    #28C775;
-@define-color red      #FB3048;
-@define-color orange   #FF8C1A;
-@define-color blue     #2E7DFF;
+/* Clockwork palette, matches ~/.config/sway/clockwork */
+@define-color base     #050A14;
+@define-color surface0 #0E1828;
+@define-color surface2 #1E2C42;
+@define-color overlay1 #4A5A72;
+@define-color subtext0 #8A9AB0;
+@define-color text     #E9E4DF;
+@define-color glow     #5FD4F0;
+@define-color frost    #9EE8F8;
+@define-color sky      #6AA6E8;
+@define-color blue     #4A8FE0;
+@define-color crimson  #C8283E;
+@define-color scarlet  #E0485C;
+@define-color rose     #D7718F;
+@define-color gold     #D4B072;
+@define-color yellow   #EBCB6B;
+@define-color amber    #E8964A;
+@define-color peach    #F2C29C;
+@define-color jade     #5CC8A0;
 
 * {
   font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", sans-serif;
@@ -23,8 +28,8 @@
 }
 
 window#waybar {
-  background: alpha(@base, 0.45);
-  border: 1px solid alpha(@pink, 0.6);
+  background: alpha(@base, 0.50);
+  border: 1px solid alpha(@glow, 0.55);
   border-radius: 16px;
   color: @text;
 }
@@ -32,8 +37,8 @@ window#waybar {
 window#waybar > box { padding: 0 4px; }
 
 tooltip {
-  background: alpha(@base, 0.92);
-  border: 1px solid @pink;
+  background: alpha(@base, 0.94);
+  border: 1px solid alpha(@glow, 0.7);
   border-radius: 10px;
 }
 
@@ -54,13 +59,14 @@ tooltip {
 #custom-battery,
 #tray,
 #custom-power {
-  background: alpha(@base, 0.70);
-  border: 1px solid alpha(@overlay1, 0.6);
+  background: alpha(@surface0, 0.72);
+  border: 1px solid alpha(@overlay1, 0.55);
   border-radius: 12px;
   padding: 0 12px;
   margin: 2px 0;
 }
 
+/* Void logo keeps its own brand green */
 #custom-launcher {
   color: #478061;
   font-size: 17px;
@@ -70,7 +76,7 @@ tooltip {
 #custom-decor {
   font-size: 14px;
   padding: 0 10px;
-  border-color: alpha(@red, 0.45);
+  border-color: alpha(@crimson, 0.55);
 }
 
 #workspaces { padding: 0 4px; }
@@ -86,75 +92,75 @@ tooltip {
 
 #workspaces button:hover {
   color: @text;
-  background: alpha(@overlay0, 0.8);
+  background: alpha(@surface2, 0.9);
   box-shadow: none;
 }
 
 #workspaces button.focused {
   color: @base;
-  background: @pink;
-  box-shadow: 0 0 8px alpha(@pink, 0.7);
+  background: @glow;
+  box-shadow: 0 0 10px alpha(@glow, 0.75);
 }
 
 #workspaces button.urgent {
-  color: @base;
-  background: @red;
+  color: @text;
+  background: @crimson;
 }
 
 #mode {
   color: @base;
-  background: @yellow;
+  background: @gold;
 }
 
-#scratchpad { color: @mauve; }
-#mpris      { color: @teal; }
+#scratchpad { color: @rose; }
+#mpris      { color: @peach; }
 
 #clock {
-  color: @sky;
-  border-color: alpha(@sky, 0.5);
+  color: @glow;
+  border-color: alpha(@glow, 0.55);
   padding: 0 16px;
 }
 
-#memory              { color: @mauve; }
-#cpu                 { color: @sky; }
+#memory               { color: @frost; }
+#cpu                  { color: @sky; }
 #memory.warning,
 #cpu.warning          { color: @yellow; }
 #memory.critical,
-#cpu.critical         { color: @red; }
-#wireplumber          { color: @pink; }
+#cpu.critical         { color: @scarlet; }
+#wireplumber          { color: @rose; }
 #wireplumber.muted    { color: @overlay1; }
-#backlight            { color: @yellow; }
-#network              { color: @teal; }
+#backlight            { color: @peach; }
+#network              { color: @glow; }
 #network.disconnected { color: @overlay1; }
 #bluetooth            { color: @blue; }
 #bluetooth.off,
 #bluetooth.disabled   { color: @overlay1; }
 
-#custom-battery           { color: @green; }
+#custom-battery             { color: @jade; }
 #custom-battery.charging,
-#custom-battery.plugged   { color: @sky; }
-#custom-battery.warning   { color: @yellow; }
-#custom-battery.powersave { color: @orange; border-color: alpha(@orange, 0.5); }
-#custom-battery.performance { color: @pink; border-color: alpha(@pink, 0.5); }
+#custom-battery.plugged     { color: @frost; }
+#custom-battery.warning     { color: @yellow; }
+#custom-battery.powersave   { color: @amber; border-color: alpha(@amber, 0.55); }
+#custom-battery.performance { color: @rose;  border-color: alpha(@rose, 0.55); }
 
 @keyframes blink {
-  to { background: @red; color: @base; }
+  to { background: @crimson; color: @text; }
 }
 
 #custom-battery.critical {
-  color: @red;
+  color: @scarlet;
   animation: blink 1s steps(2) infinite alternate;
 }
 
-#tray > .needs-attention { background: alpha(@red, 0.6); }
+#tray > .needs-attention { background: alpha(@crimson, 0.6); }
 
 #custom-power {
-  color: @red;
+  color: @scarlet;
   font-size: 15px;
   padding: 0 14px 0 12px;
 }
 
 #custom-power:hover,
 #custom-launcher:hover {
-  background: alpha(@overlay0, 0.9);
+  background: alpha(@surface2, 0.95);
 }

@@ -4,36 +4,35 @@ console_title_template = '{{ .Shell }} in {{ .Folder }}'
 version = 3
 final_space = true
 
-# Sourced from ~/.config/kitty/current-theme.conf (Cyberpunk)
+# Clockwork palette, matches ~/.config/sway/clockwork
 [palette]
-  bg = '#040A10'
-  fg = '#E8FBFD'
-  hotPink = '#E455AE'
-  magenta = '#CB1DCD'
-  red = '#FB3048'
-  brightRed = '#FF5048'
-  violet = '#9370DB'
-  ice = '#AE94E4'
-  cyan = '#1AC5B0'
-  teal = '#5DF4FE'
-  green = '#28C775'
-  mint = '#5ED598'
-  amber = '#FDF500'
-  lime = '#CFED58'
-  grey = '#52545B'
-  slate = '#7D7F84'
+  bg = '#050A14'
+  fg = '#E9E4DF'
+  glow = '#5FD4F0'
+  frost = '#9EE8F8'
+  blue = '#4A8FE0'
+  sky = '#6AA6E8'
+  crimson = '#C8283E'
+  scarlet = '#E0485C'
+  rose = '#D7718F'
+  gold = '#D4B072'
+  yellow = '#EBCB6B'
+  peach = '#F2C29C'
+  jade = '#5CC8A0'
+  mint = '#86DDBC'
+  grey = '#4A5A72'
 
 [secondary_prompt]
   template = '❯❯ '
-  foreground = 'p:violet'
+  foreground = 'p:blue'
   background = 'transparent'
 
 [transient_prompt]
   template = '❯ '
   background = 'transparent'
   foreground_templates = [
-    '{{ if gt .Code 0 }}p:red{{ end }}',
-    '{{ if eq .Code 0 }}p:cyan{{ end }}',
+    '{{ if gt .Code 0 }}p:scarlet{{ end }}',
+    '{{ if eq .Code 0 }}p:glow{{ end }}',
   ]
 
 [[blocks]]
@@ -48,7 +47,7 @@ final_space = true
     powerline_symbol = ''
     template = ' {{ if .Root }}⚡ {{ end }}{{ .UserName }}@{{ .HostName }} '
     foreground = 'p:bg'
-    background = 'p:hotPink'
+    background = 'p:glow'
 
     [blocks.segments.properties]
       cache_duration = 'none'
@@ -60,7 +59,7 @@ final_space = true
     powerline_symbol = ''
     template = ' {{ .Path }} '
     foreground = 'p:bg'
-    background = 'p:violet'
+    background = 'p:sky'
 
     [blocks.segments.properties]
       cache_duration = 'none'
@@ -75,11 +74,11 @@ final_space = true
     powerline_symbol = ''
     template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }}{{ if gt .Behind 0 }} ⇣{{ .Behind }}{{ end }}{{ if gt .Ahead 0 }} ⇡{{ .Ahead }}{{ end }} '
     foreground = 'p:bg'
-    background = 'p:cyan'
+    background = 'p:jade'
     background_templates = [
-      '{{ if or (.Working.Changed) (.Staging.Changed) }}p:amber{{ end }}',
-      '{{ if gt .Behind 0 }}p:teal{{ end }}',
-      '{{ if gt .Ahead 0 }}p:teal{{ end }}',
+      '{{ if or (.Working.Changed) (.Staging.Changed) }}p:gold{{ end }}',
+      '{{ if gt .Behind 0 }}p:frost{{ end }}',
+      '{{ if gt .Ahead 0 }}p:frost{{ end }}',
     ]
 
     [blocks.segments.properties]
@@ -96,7 +95,7 @@ final_space = true
     powerline_symbol = ''
     template = '  {{ if .Venv }}{{ .Venv }}{{ else }}{{ .Full }}{{ end }} '
     foreground = 'p:bg'
-    background = 'p:green'
+    background = 'p:yellow'
 
     [blocks.segments.properties]
       cache_duration = 'none'
@@ -124,7 +123,7 @@ final_space = true
     powerline_symbol = ''
     template = '  {{ .FormattedMs }} '
     foreground = 'p:bg'
-    background = 'p:lime'
+    background = 'p:peach'
 
     [blocks.segments.properties]
       cache_duration = 'none'
@@ -138,7 +137,7 @@ final_space = true
     powerline_symbol = ''
     template = '  {{ .Code }} '
     foreground = 'p:fg'
-    background = 'p:red'
+    background = 'p:crimson'
 
     [blocks.segments.properties]
       cache_duration = 'none'
@@ -155,8 +154,8 @@ final_space = true
     template = '❯'
     background = 'transparent'
     foreground_templates = [
-      '{{ if gt .Code 0 }}p:red{{ end }}',
-      '{{ if eq .Code 0 }}p:cyan{{ end }}',
+      '{{ if gt .Code 0 }}p:scarlet{{ end }}',
+      '{{ if eq .Code 0 }}p:glow{{ end }}',
     ]
 
     [blocks.segments.properties]

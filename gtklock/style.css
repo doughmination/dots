@@ -1,12 +1,12 @@
-/* Cyberpunk palette, matches ~/.config/sway/cyberpunk and swaylock config */
-@define-color bg      #040A10;
-@define-color fg      #E8FBFD;
-@define-color magenta #E455AE;
-@define-color cyan    #5DF4FE;
-@define-color teal    #1AC5B0;
-@define-color red     #FB3048;
-@define-color yellow  #FDF500;
-@define-color purple  #9370DB;
+/* Clockwork palette, matches ~/.config/sway/clockwork and swaylock config */
+@define-color bg      #050A14;
+@define-color fg      #E9E4DF;
+@define-color glow    #5FD4F0;
+@define-color frost   #9EE8F8;
+@define-color blue    #4A8FE0;
+@define-color crimson #E0485C;
+@define-color gold    #D4B072;
+@define-color amber   #E8964A;
 
 * {
   font-family: "JetBrainsMono Nerd Font";
@@ -22,27 +22,27 @@ window {
 #window-box {
   padding: 36px 48px;
   border-radius: 14px;
-  border: 2px solid @magenta;
+  border: 2px solid @glow;
   background-color: alpha(@bg, 0.80);
-  box-shadow: 0 0 24px alpha(@magenta, 0.45);
+  box-shadow: 0 0 24px alpha(@glow, 0.45);
 }
 
 #clock-label {
   font-size: 72px;
   font-weight: bold;
-  color: @cyan;
-  text-shadow: 0 0 12px alpha(@cyan, 0.6);
+  color: @frost;
+  text-shadow: 0 0 12px alpha(@frost, 0.6);
 }
 
 #date-label {
   font-size: 18px;
-  color: @purple;
+  color: @gold;
   margin-bottom: 20px;
 }
 
 #input-label {
   font-size: 16px;
-  color: @magenta;
+  color: @glow;
   margin-right: 8px;
 }
 
@@ -52,23 +52,23 @@ window {
   min-height: 40px;
   padding: 4px 14px;
   font-size: 20px;
-  color: @cyan;
-  caret-color: @magenta;
+  color: @frost;
+  caret-color: @glow;
   background-color: alpha(@bg, 0.9);
   background-image: none;
-  border: 2px solid @purple;
+  border: 2px solid @blue;
   border-radius: 8px;
   box-shadow: none;
 }
 
 #input-field:focus {
-  border-color: @cyan;
-  box-shadow: 0 0 10px alpha(@cyan, 0.5);
+  border-color: @frost;
+  box-shadow: 0 0 10px alpha(@frost, 0.5);
 }
 
 #input-field:disabled {          /* while checking the password */
-  border-color: @teal;
-  color: @teal;
+  border-color: @gold;
+  color: @gold;
 }
 
 #unlock-button {
@@ -77,23 +77,23 @@ window {
   font-weight: bold;
   color: @bg;
   background-image: none;
-  background-color: @magenta;
+  background-color: @glow;
   border: none;
   border-radius: 8px;
   box-shadow: none;
 }
 
-#unlock-button:hover  { background-color: @cyan; }
-#unlock-button:active { background-color: @teal; }
+#unlock-button:hover  { background-color: @frost; }
+#unlock-button:active { background-color: @gold; }
 
 #error-label {                   /* wrong password */
-  color: @red;
+  color: @crimson;
   font-weight: bold;
   margin-top: 10px;
 }
 
 #warning-label {                 /* caps lock */
-  color: @yellow;
+  color: @amber;
   font-weight: bold;
   margin-top: 10px;
 }

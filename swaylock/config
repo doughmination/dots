@@ -1,4 +1,4 @@
-# Cyberpunk palette, matches ~/.config/sway/cyberpunk
+# Clockwork palette, matches ~/.config/sway/clockwork
 daemonize
 ignore-empty-password
 show-failed-attempts
@@ -10,7 +10,7 @@ hide-keyboard-layout
 # this is the fallback
 image=/home/clove/img/background.png
 scaling=fill
-color=040A10
+color=050A14
 
 font=JetBrainsMono Nerd Font
 font-size=22
@@ -18,36 +18,36 @@ indicator-radius=110
 indicator-thickness=9
 
 # Idle
-inside-color=040A10cc
-ring-color=E455AEff
+inside-color=050A14cc
+ring-color=5FD4F0ff
 line-color=00000000
 separator-color=00000000
-text-color=E8FBFDff
-key-hl-color=5DF4FEff
-bs-hl-color=FB3048ff
+text-color=E9E4DFff
+key-hl-color=D4B072ff
+bs-hl-color=E0485Cff
 
 # Checking password
-inside-ver-color=040A10cc
-ring-ver-color=1AC5B0ff
+inside-ver-color=050A14cc
+ring-ver-color=D4B072ff
 line-ver-color=00000000
-text-ver-color=1AC5B0ff
+text-ver-color=D4B072ff
 
 # Wrong password
-inside-wrong-color=710100cc
-ring-wrong-color=FB3048ff
+inside-wrong-color=5A0F1Ccc
+ring-wrong-color=E0485Cff
 line-wrong-color=00000000
-text-wrong-color=FB3048ff
+text-wrong-color=E0485Cff
 
 # Cleared input
-inside-clear-color=040A10cc
-ring-clear-color=9370DBff
+inside-clear-color=050A14cc
+ring-clear-color=4A8FE0ff
 line-clear-color=00000000
-text-clear-color=9370DBff
+text-clear-color=4A8FE0ff
 
 # Caps lock on
-inside-caps-lock-color=040A10cc
-ring-caps-lock-color=FDF500ff
+inside-caps-lock-color=050A14cc
+ring-caps-lock-color=E8964Aff
 line-caps-lock-color=00000000
-text-caps-lock-color=FDF500ff
-caps-lock-key-hl-color=5DF4FEff
-caps-lock-bs-hl-color=FB3048ff
+text-caps-lock-color=E8964Aff
+caps-lock-key-hl-color=D4B072ff
+caps-lock-bs-hl-color=E0485Cff

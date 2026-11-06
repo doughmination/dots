@@ -1,4 +1,4 @@
-include cyberpunk
+include clockwork
 
 ### Variables
 #
@@ -70,19 +70,19 @@ blur_xray off
 blur_passes 3
 blur_radius 5
 
-# Oversaturated, slightly crushed CRT look
+# Slightly deepened, cool glass to sit over the space art
 blur_brightness 0.95
 blur_contrast 1.15
-blur_saturation 1.35
+blur_saturation 1.15
 blur_noise 0.02
 
-# Neon bleed under every window
+# Gear glow under the focused window, a faint ribbon-red under the rest
 shadows enable
 shadows_on_csd enable
 shadow_blur_radius 28
 shadow_offset 0 0
-shadow_color #E455AECC
-shadow_inactive_color #1AC5B055
+shadow_color #5FD4F0AA
+shadow_inactive_color #C8283E30
 
 # Glass treatment for the bar, launcher and notifications
 layer_effects "waybar" "blur enable; blur_ignore_transparent enable; shadows enable; corner_radius 16"
@@ -91,19 +91,19 @@ layer_effects "notifications" "blur enable; shadows enable; corner_radius 16"
 
 # Inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
 default_dim_inactive 0.17
-dim_inactive_colors.unfocused #000000FF
-dim_inactive_colors.urgent #710100FF
+dim_inactive_colors.unfocused #020409FF
+dim_inactive_colors.urgent #5A0F1CFF
 
 scratchpad_minimize disable
 
 ### Colors
 #
 # target                 title     bg    text   indicator  border
-client.focused           $pink     $base $text  $pink      $pink
-client.focused_inactive  $overlay0 $base $text  $overlay0  $overlay0
-client.unfocused         $overlay0 $base $text  $overlay0  $overlay0
-client.urgent            $red      $base $peach $red       $red
-client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
+client.focused           $glow     $base $text  $frost     $glow
+client.focused_inactive  $surface2 $base $text  $surface2  $surface2
+client.unfocused         $surface2 $base $text  $surface2  $surface2
+client.urgent            $crimson  $base $text  $scarlet   $crimson
+client.placeholder       $surface2 $base $text  $surface2  $surface2
 client.background        $base
 
 ### Key bindings
