@@ -1,0 +1,8 @@
+#!/bin/sh
+# Toggle the bluetooth adapter on/off (unblocking rfkill if needed).
+if bluetoothctl show | grep -q 'Powered: yes'; then
+  bluetoothctl power off
+else
+  rfkill unblock bluetooth
+  bluetoothctl power on
+fi

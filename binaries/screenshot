@@ -1,0 +1,29 @@
+#!/bin/sh
+# screenshot [-s] [-c] | screenshot -r
+#   -s  select a region (default: whole screen)
+#   -c  copy to clipboard instead of saving
+#   -r  start/stop a screen recording (region select)
+region= copy=
+while getopts scr opt; do
+  case $opt in
+    s) region=1 ;;
+    c) copy=1 ;;
+    r)
+      if pkill -INT -x wf-recorder; then
+        notify-send "Recording saved" "$HOME/Videos"
+      else
+        g=$(slurp) || exit 1
+        notify-send "Recording" "Press Ctrl+Alt+Print again to stop"
+        wf-recorder -g "$g" -f "$HOME/Videos/rec-$(date +%F_%H-%M-%S).mp4"
+      fi
+      exit ;;
+    *) exit 1 ;;
+  esac
+done
+if [ -n "$region" ]; then g=$(slurp) || exit 1; set -- -g "$g"; else set --; fi
+if [ -n "$copy" ]; then
+  grim "$@" - | wl-copy --type image/png && notify-send "Screenshot copied"
+else
+  f="$HOME/Pictures/Screenshots/$(date +%F_%H-%M-%S).png"
+  grim "$@" "$f" && notify-send "Screenshot saved" "$f"
+fi

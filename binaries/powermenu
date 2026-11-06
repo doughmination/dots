@@ -1,0 +1,9 @@
+#!/bin/sh
+choice=$(printf 'Lock\nLogout\nSuspend\nReboot\nShutdown\n' | fuzzel --dmenu --prompt "power ") || exit
+case $choice in
+  Lock)     ~/.local/bin/lock-screen ;;
+  Logout)   swaymsg exit ;;
+  Suspend)  ~/.local/bin/lock-screen && loginctl suspend ;;
+  Reboot)   loginctl reboot ;;
+  Shutdown) loginctl poweroff ;;
+esac

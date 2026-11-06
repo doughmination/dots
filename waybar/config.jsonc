@@ -13,8 +13,10 @@
   "modules-right": ["memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "custom/power"],
 
   "custom/launcher": {
-    "format": "",
-    "tooltip": false,
+    "exec": "~/.config/waybar/scripts/distro-icon",
+    "return-type": "json",
+    "interval": "once",
+    "format": "{}",
     "on-click": "fuzzel"
   },
 

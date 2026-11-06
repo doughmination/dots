@@ -10,7 +10,7 @@ set $menu fuzzel
 set $lock ~/.local/bin/lock-screen
 set $ss ~/.local/bin/screenshot
 set $files kitty -e yazi
-set $wallpaper /home/clove/img/background.png
+set $wallpaper ~/.config/sway/background.png
 
 # Bar, launcher, power menu, notifications, clipboard
 set $launcher $menu

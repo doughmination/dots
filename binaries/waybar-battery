@@ -1,0 +1,67 @@
+#!/bin/sh
+# Battery module for waybar that also reflects the power-profiles-daemon state.
+# Usage: waybar-battery              -> print JSON for waybar
+#        waybar-battery saver        -> flip power-saver <-> balanced
+#        waybar-battery performance  -> flip performance <-> balanced
+#        waybar-battery menu         -> pick a profile with fuzzel
+BAT=/sys/class/power_supply/BAT0
+
+toggle() {  # $1 = profile to flip into (back to balanced if already on it)
+  if [ "$(powerprofilesctl get)" = "$1" ]; then
+    powerprofilesctl set balanced
+  else
+    powerprofilesctl set "$1"
+  fi
+}
+
+case $1 in
+  toggle|saver) toggle power-saver ;;
+  performance)  toggle performance ;;
+  menu)
+    current=$(powerprofilesctl get)
+    choice=$(powerprofilesctl list | sed -n 's/^[* ] *\([a-z-]*\):$/\1/p' \
+      | fuzzel --dmenu --prompt "profile ($current) ") || exit
+    powerprofilesctl set "$choice" ;;
+esac
+if [ -n "$1" ]; then
+  pkill -RTMIN+8 -x waybar
+  exit
+fi
+
+cap=$(cat "$BAT/capacity")
+status=$(cat "$BAT/status")
+e_now=$(cat "$BAT/energy_now")
+e_full=$(cat "$BAT/energy_full")
+p_now=$(cat "$BAT/power_now")
+profile=$(powerprofilesctl get 2>/dev/null)
+
+set -- 󰂎 󰁺 󰁻 󰁼 󰁽 󰁾 󰁿 󰂀 󰂁 󰂂 󰁹
+shift $((cap / 10))
+icon=$1
+classes=""
+case $status in
+  Charging)              icon=󰂄; classes="charging" ;;
+  Full|"Not charging")   icon=󰚥; classes="plugged" ;;
+  *)
+    [ "$cap" -le 25 ] && classes="warning"
+    [ "$cap" -le 10 ] && classes="critical" ;;
+esac
+case $profile in
+  power-saver) classes="$classes powersave" ;;
+  performance) classes="$classes performance" ;;
+esac
+
+# Time estimate (energy in µWh, power in µW)
+time=""
+if [ "$p_now" -gt 0 ]; then
+  case $status in
+    Discharging) mins=$((e_now * 60 / p_now)); time="$((mins / 60))h $((mins % 60))m remaining" ;;
+    Charging)    mins=$(((e_full - e_now) * 60 / p_now)); time="$((mins / 60))h $((mins % 60))m until full" ;;
+  esac
+fi
+watts=$(awk "BEGIN{printf \"%.1f\", $p_now/1000000}")
+tip="${time:+$time, }${watts}W\\nProfile: $profile\\nLeft: power-saver · Right: performance · Middle: menu"
+
+json_classes=$(printf '%s\n' $classes | awk 'NF{printf "%s\"%s\"", (n++?",":""), $0}')
+printf '{"text":"%s %s%%","tooltip":"%s","class":[%s],"percentage":%s}\n' \
+  "$icon" "$cap" "$tip" "$json_classes" "$cap"

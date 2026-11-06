@@ -66,9 +66,8 @@ tooltip {
   margin: 2px 0;
 }
 
-/* Void logo keeps its own brand green */
+/* Distro logo; its brand color comes from scripts/distro-icon */
 #custom-launcher {
-  color: #478061;
   font-size: 17px;
   padding: 0 14px 0 12px;
 }

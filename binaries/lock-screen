@@ -1,0 +1,19 @@
+#!/bin/sh
+# Styling lives in ~/.config/gtklock/{config.ini,style.css}.
+pgrep -x gtklock >/dev/null && exit 0
+
+wall="$HOME/.config/sway/background.png"
+blurred="${XDG_CACHE_HOME:-$HOME/.cache}/lock-background.png"
+bg="$wall"
+
+# Blurred + darkened copy of the wallpaper, rebuilt only when the wallpaper changes.
+if command -v magick >/dev/null && [ -f "$wall" ]; then
+  if [ ! -f "$blurred" ] || [ "$wall" -nt "$blurred" ]; then
+    mkdir -p "$(dirname "$blurred")"
+    magick "$wall" -resize 25% -blur 0x6 -resize 400% \
+      -fill '#050A14' -colorize 35% "$blurred"
+  fi
+  bg="$blurred"
+fi
+
+exec gtklock -d -b "$bg"

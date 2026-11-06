@@ -1,0 +1,57 @@
+#!/bin/sh
+# Waybar launcher icon: this distro's logo in its brand color.
+# Reads /etc/os-release, tries ID first, then each ID_LIKE parent,
+# and falls back to Tux. Glyphs come from Nerd Fonts (nf-linux-*).
+
+[ -r /etc/os-release ] && . /etc/os-release
+
+icon_for() {
+  case $1 in
+    void)                  echo "f32e #478061" ;;
+    arch|archarm)          echo "f303 #1793D1" ;;
+    artix)                 echo "f31f #10A0CC" ;;
+    endeavouros)           echo "f322 #7F7FFF" ;;
+    manjaro|manjaro-arm)   echo "f312 #35BF5C" ;;
+    cachyos)               echo "f385 #00B9A5" ;;
+    garuda)                echo "f337 #2BB3C5" ;;
+    arcolinux)             echo "f346 #6DA5E3" ;;
+    debian)                echo "f306 #D70A53" ;;
+    ubuntu)                echo "f31b #E95420" ;;
+    linuxmint)             echo "f30e #87CF3E" ;;
+    pop)                   echo "f32a #48B9C7" ;;
+    elementary)            echo "f309 #64BAFF" ;;
+    zorin)                 echo "f32f #15A6F0" ;;
+    kali)                  echo "f327 #367BF0" ;;
+    devuan)                echo "f307 #9A8FC2" ;;
+    fedora)                echo "f30a #51A2DA" ;;
+    nobara)                echo "f380 #9C6FE4" ;;
+    rhel)                  echo "f316 #EE0000" ;;
+    centos)                echo "f304 #9CCD2A" ;;
+    rocky)                 echo "f32b #10B981" ;;
+    almalinux)             echo "f31d #FFCB12" ;;
+    opensuse-tumbleweed)   echo "f37d #73BA25" ;;
+    opensuse-leap)         echo "f37e #73BA25" ;;
+    opensuse|suse)         echo "f314 #73BA25" ;;
+    nixos)                 echo "f313 #7EBAE4" ;;
+    gentoo)                echo "f30d #9A8FC2" ;;
+    alpine)                echo "f300 #2B8EC8" ;;
+    postmarketos)          echo "f374 #009900" ;;
+    slackware)             echo "f318 #6577B3" ;;
+    solus)                 echo "f32d #5294E2" ;;
+    guix)                  echo "f325 #FFCC00" ;;
+    freebsd)               echo "f30c #D5242C" ;;
+    openbsd)               echo "f328 #F2CA30" ;;
+    *) return 1 ;;
+  esac
+}
+
+for id in $ID $ID_LIKE; do
+  pick=$(icon_for "$id") && break
+done
+[ -n "$pick" ] || pick="f31a #E9E4DF"   # Tux
+
+glyph=${pick% *}
+color=${pick#* }
+name=${PRETTY_NAME:-${NAME:-Linux}}
+printf '{"text":"<span color=\\"%s\\">\\u%s</span>","tooltip":"%s","class":"%s"}\n' \
+  "$color" "$glyph" "$name" "${ID:-linux}"

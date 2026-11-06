@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# install: full setup. Runs, in order:
+#   1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
+#   2. install-assets.sh  font and cursor themes
+#   3. install-config.sh  link configs into ~/.config
+#   4. install-scripts.sh link binaries/ into ~/.local/bin
+#
+#   ./install                     everything
+#   ./install --dry-run           print every command without running anything
+#   --no-flatpak, --no-services   passed through to install-deps.sh
+#
+# Each script also works on its own.
+
+set -uo pipefail
+
+ALL=() DEPS=()
+for arg in "$@"; do
+  case $arg in
+    --dry-run)                  ALL+=("$arg") ;;
+    --no-flatpak|--no-services) DEPS+=("$arg") ;;
+    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
+  esac
+done
+
+REPO=$(cd "$(dirname "$0")" && pwd)
+failed=()
+for part in deps assets config scripts; do
+  printf '\n\e[1;35m######## install-%s ########\e[0m\n' "$part"
+  if [ "$part" = deps ]; then
+    "$REPO/install-deps.sh" "${ALL[@]}" "${DEPS[@]}" || failed+=("$part")
+  else
+    "$REPO/install-$part.sh" "${ALL[@]}" || failed+=("$part")
+  fi
+done
+
+echo
+if [ ${#failed[@]} -gt 0 ]; then
+  printf '\e[1;33mFinished, but these steps reported errors: %s\e[0m\n' "${failed[*]}"
+  exit 1
+fi
+printf '\e[1;32mAll done.\e[0m Log out and back in (or reboot) to start sway with everything.\n'

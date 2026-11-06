@@ -1,0 +1,7 @@
+#!/bin/sh
+# Toggle the Wi-Fi radio on/off (wired connections are left alone).
+if [ "$(nmcli radio wifi)" = enabled ]; then
+  nmcli radio wifi off
+else
+  nmcli radio wifi on
+fi

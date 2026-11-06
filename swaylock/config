@@ -8,7 +8,7 @@ hide-keyboard-layout
 
 # lock-screen passes a blurred copy of the wallpaper if imagemagick is installed;
 # this is the fallback
-image=/home/clove/img/background.png
+image=~/.config/sway/background.png
 scaling=fill
 color=050A14
 

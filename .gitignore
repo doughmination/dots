@@ -6,6 +6,9 @@
 # --- Repo files ---
 !/.gitignore
 !/README.md
+!/screenshot.png
+!/install
+!/install-*.sh
 
 # --- Desktop: sway + bar + launcher + notifications + lock ---
 !/sway/
@@ -26,6 +29,12 @@
 !/gtkrc
 !/gtkrc-2.0
 !/xsettingsd/
+
+# --- Scripts (linked into ~/.local/bin by install-scripts.sh) ---
+!/binaries/
+
+# --- Cursor theme (linked into ~/.icons by install-assets.sh) ---
+!/icons/
 
 # --- Monitors (they save configs here once you change a setting) ---
 !/btop/
