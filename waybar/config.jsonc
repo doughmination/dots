@@ -9,8 +9,8 @@
   "reload_style_on_change": true,
 
   "modules-left": ["custom/launcher", "custom/decor", "sway/workspaces", "sway/mode", "sway/scratchpad", "mpris"],
-  "modules-center": ["clock"],
-  "modules-right": ["custom/recording", "custom/updates", "idle_inhibitor", "custom/nightlight", "custom/dnd", "memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "custom/power"],
+  "modules-center": [],
+  "modules-right": ["custom/recording", "custom/updates", "idle_inhibitor", "custom/nightlight", "custom/dnd", "memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "clock", "custom/power"],
 
   "custom/launcher": {
     "exec": "~/.config/waybar/scripts/distro-icon",
@@ -137,6 +137,10 @@
     "format-wifi": "󰤨 {essid}",
     "format-ethernet": "󰈀 wired",
     "format-disconnected": "󰤭 offline",
+    "format-disabled": "\udb81\uddaa wifi off",
+    "format-linked": "\udb82\udd2b {essid} (no IP)",
+    "tooltip-format-disabled": "Wi-Fi is off\nClick to turn it on",
+    "tooltip-format-disconnected": "Not connected\nClick to turn Wi-Fi off · Right-click for nmtui",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}\n {bandwidthDownBytes}   {bandwidthUpBytes}",
     "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
     "on-click": "~/.local/bin/net-toggle",

@@ -74,13 +74,11 @@ tooltip {
 /* Distro logo; its brand color comes from scripts/distro-icon */
 #custom-launcher {
   font-size: 17px;
-  padding: 0 14px 0 12px;
 }
 
 /* Wallpaper toggle: crimson picture = still, cyan play = animated */
 #custom-decor {
   font-size: 15px;
-  padding: 0 11px;
   border-color: alpha(@crimson, 0.55);
 }
 #custom-decor.animated { border-color: alpha(@glow, 0.55); }
@@ -126,13 +124,12 @@ tooltip {
 #clock {
   color: @glow;
   border-color: alpha(@glow, 0.55);
-  padding: 0 16px;
 }
 
 /* Quick toggles: dim when off, lit when on */
 #idle_inhibitor,
 #custom-nightlight,
-#custom-dnd                  { color: @subtext0; padding: 0 11px; }
+#custom-dnd                  { color: @subtext0; }
 #idle_inhibitor.activated    { color: @peach;  border-color: alpha(@peach, 0.55); }
 #custom-nightlight.on        { color: @amber;  border-color: alpha(@amber, 0.55); }
 #custom-dnd.on               { color: @rose;   border-color: alpha(@rose, 0.55); }
@@ -159,7 +156,9 @@ tooltip {
 #wireplumber.muted    { color: @overlay1; }
 #backlight            { color: @peach; }
 #network              { color: @glow; }
-#network.disconnected { color: @overlay1; }
+#network.disconnected,
+#network.disabled     { color: @overlay1; }
+#network.linked       { color: @amber; }
 #bluetooth            { color: @blue; }
 #bluetooth.off,
 #bluetooth.disabled   { color: @overlay1; }
@@ -185,7 +184,6 @@ tooltip {
 #custom-power {
   color: @scarlet;
   font-size: 15px;
-  padding: 0 14px 0 12px;
 }
 
 #custom-power:hover,
