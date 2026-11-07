@@ -10,6 +10,7 @@
 #
 # Supported: Void, Arch (+ derivatives), Fedora, Debian/Ubuntu (+ derivatives), openSUSE.
 # Packages a distro doesn't carry are skipped and listed at the end, never fatal.
+# On any other distro the package step is skipped and the rest still runs.
 
 set -uo pipefail
 
@@ -51,8 +52,14 @@ for id in ${ID:-} ${ID_LIKE:-}; do
   esac
   [ -n "$FAMILY" ] && break
 done
-[ -n "$FAMILY" ] || { echo "Unsupported distro: ${PRETTY_NAME:-unknown}"; exit 1; }
-echo "Detected ${PRETTY_NAME:-$ID} (using the $FAMILY package list)"
+if [ -n "$FAMILY" ]; then
+  echo "Detected ${PRETTY_NAME:-$ID} (using the $FAMILY package list)"
+else
+  FAMILY=unknown
+  warn "Unsupported distro (${PRETTY_NAME:-unknown}): install the packages yourself; the rest still runs"
+fi
+# Never stop at a prompt, so this can run unattended
+export DEBIAN_FRONTEND=noninteractive
 [ "$DRY" = 1 ] && echo "Dry run: nothing will be installed."
 
 # ---------- package lists ----------
@@ -76,7 +83,9 @@ arch)
         brightnessctl playerctl power-profiles-daemon
         networkmanager bluez bluez-utils bluetui btop
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
-        jq curl unzip git fontconfig base-devel rustup) ;;
+        jq curl unzip git fontconfig base-devel rustup)
+  # rustup conflicts with the rust package, and --noconfirm would abort the whole install
+  if have cargo && ! have rustup; then PKGS=("${PKGS[@]/rustup}"); PKGS=(${PKGS[@]}); fi ;;
 fedora)
   PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify fuzzel gtklock ImageMagick kitty yazi
@@ -114,11 +123,55 @@ available() {
   esac
 }
 
+# Install a list of packages in one go. If that fails (one bad package or a
+# conflict sinks the whole transaction), retry them one at a time and record
+# the ones that still fail in MISSING.
+install_pkgs() {
+  [ $# -gt 0 ] || return 0
+  local cmd
+  case $FAMILY in
+    arch)   cmd=(pacman -S --needed --noconfirm) ;;
+    fedora) cmd=(dnf install -y) ;;
+    debian) cmd=(apt-get install -y) ;;
+    suse)   cmd=(zypper -n install) ;;
+  esac
+  run "${SUDO[@]}" "${cmd[@]}" "$@" && return 0
+  [ "$DRY" = 1 ] && return 0
+  warn "Installing everything at once failed, trying one package at a time"
+  for p in "$@"; do
+    "${SUDO[@]}" "${cmd[@]}" "$p" >/dev/null 2>&1 || { warn "Couldn't install $p"; MISSING+=("$p"); }
+  done
+}
+
+# Arch: find an AUR helper, or build paru if there isn't one.
+aur_helper() {
+  for h in paru yay; do have "$h" && { AUR=$h; return 0; }; done
+  if [ "$(id -u)" = 0 ]; then
+    warn "Running as root: makepkg won't build as root, so no AUR helper"
+    return 1
+  fi
+  step "No yay or paru found, building paru from the AUR"
+  if [ "$DRY" = 1 ]; then
+    echo "  $ git clone https://aur.archlinux.org/paru-bin.git && makepkg -si --noconfirm"
+    AUR=paru; return 0
+  fi
+  local tmp; tmp=$(mktemp -d)
+  if git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin" &&
+     (cd "$tmp/paru-bin" && makepkg -si --noconfirm); then
+    rm -rf "$tmp"; AUR=paru; return 0
+  fi
+  rm -rf "$tmp"
+  warn "Building paru failed"
+  return 1
+}
+
 # ---------- 1. distro packages ----------
+if [ "$FAMILY" != unknown ]; then
 step "Refreshing package lists"
 case $FAMILY in
   void)   run "${SUDO[@]}" xbps-install -S ;;
-  arch)   run "${SUDO[@]}" pacman -Sy ;;
+  # -Syu, not -Sy: installing after a bare -Sy is a partial upgrade, which Arch doesn't support
+  arch)   run "${SUDO[@]}" pacman -Syu --noconfirm ;;
   fedora)
     # swayfx lives in its own COPR on Fedora
     run "${SUDO[@]}" dnf install -y dnf-plugins-core
@@ -137,34 +190,47 @@ echo "  ${#INSTALL[@]} found, ${#MISSING[@]} not in your repos"
 step "Installing packages"
 case $FAMILY in
   void)   run "${SUDO[@]}" xbps-install -y "${INSTALL[@]}" ;;
-  arch)   run "${SUDO[@]}" pacman -S --needed --noconfirm "${INSTALL[@]}" ;;
-  fedora) run "${SUDO[@]}" dnf install -y "${INSTALL[@]}" ;;
-  debian) run "${SUDO[@]}" apt-get install -y "${INSTALL[@]}" ;;
-  suse)   run "${SUDO[@]}" zypper -n install "${INSTALL[@]}" ;;
+  arch|fedora|debian|suse) install_pkgs "${INSTALL[@]}" ;;
 esac
 
 # Arch: whatever pacman lacked, try the AUR
 if [ "$FAMILY" = arch ] && [ ${#MISSING[@]} -gt 0 ]; then
   AUR=""
-  for h in paru yay; do have "$h" && { AUR=$h; break; }; done
-  if [ -n "$AUR" ]; then
+  if aur_helper; then
     step "Installing from the AUR with $AUR: ${MISSING[*]}"
-    run "$AUR" -S --needed --noconfirm "${MISSING[@]}" && MISSING=()
+    # Skip the PKGBUILD review/diff prompts so it can run unattended
+    case $AUR in
+      paru) AUR_CMD=(paru -S --needed --noconfirm --skipreview) ;;
+      yay)  AUR_CMD=(yay -S --needed --noconfirm --answerdiff None --answerclean None) ;;
+    esac
+    # swayfx replaces sway, and --noconfirm answers "no" to removing it
+    if printf '%s\n' "${MISSING[@]}" | grep -qx swayfx &&
+       pacman -Qq sway >/dev/null 2>&1 && ! pacman -Qq swayfx >/dev/null 2>&1; then
+      warn "Plain sway is installed and conflicts with swayfx. Replace it with: $AUR -S swayfx"
+    fi
+    STILL=()
+    for p in "${MISSING[@]}"; do
+      run "${AUR_CMD[@]}" "$p" || STILL+=("$p")
+    done
+    MISSING=("${STILL[@]}")
   else
-    warn "No AUR helper (paru or yay) found, so these were skipped: ${MISSING[*]}"
+    warn "No AUR helper available, so these were skipped: ${MISSING[*]}"
   fi
 fi
+fi # FAMILY != unknown
 
 # ---------- 2. Rust toolchain + hyfetch ----------
 step "Rust toolchain (rustup, stable)"
 export PATH="$HOME/.cargo/bin:$PATH"
-if ! have rustup; then
+if ! have rustup && have cargo; then
+  echo "  using the cargo already on this system ($(command -v cargo))"
+elif ! have rustup; then
   warn "rustup isn't packaged here, using the official installer"
   if [ "$DRY" = 1 ]; then echo "  $ curl https://sh.rustup.rs | sh -s -- -y --no-modify-path"
   else curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
   fi
 fi
-run rustup default stable
+have rustup || [ "$DRY" = 1 ] && run rustup default stable
 
 step "hyfetch (cargo)"
 run cargo install hyfetch
@@ -204,7 +270,16 @@ if [ "$SERVICES" = 1 ]; then
       fi
     done
   elif have systemctl; then
-    run "${SUDO[@]}" systemctl enable --now NetworkManager bluetooth power-profiles-daemon
+    # One at a time so a missing unit doesn't stop the others. Without a running
+    # systemd (chroot, container) just enable them for the next boot.
+    now=(--now); [ -d /run/systemd/system ] || now=()
+    for unit in NetworkManager bluetooth power-profiles-daemon; do
+      if systemctl list-unit-files "$unit.service" 2>/dev/null | grep -q "^$unit\.service" || [ "$DRY" = 1 ]; then
+        run "${SUDO[@]}" systemctl enable "${now[@]}" "$unit" || warn "Couldn't enable $unit"
+      else
+        warn "No systemd unit named $unit"
+      fi
+    done
   else
     warn "Unknown init system; enable NetworkManager, bluetooth and power-profiles-daemon yourself"
   fi

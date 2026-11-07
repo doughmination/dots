@@ -1,28 +1,32 @@
 #!/usr/bin/env bash
 # install: full setup. Runs, in order:
 #   1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
-#   2. install-assets.sh  font and cursor themes
-#   3. install-config.sh  link configs into ~/.config
-#   4. install-scripts.sh link binaries/ into ~/.local/bin
+#   2. install-git.sh     git name, email and default branch
+#   3. install-assets.sh  font and cursor themes
+#   4. install-config.sh  link configs into ~/.config
+#   5. install-scripts.sh link binaries/ into ~/.local/bin
 #
 #   ./install                     everything
 #   ./install --dry-run           print every command without running anything
 #   --no-flatpak, --no-services   passed through to install-deps.sh
 #   --with-sddm                   also install the Clockwork login theme (install-sddm.sh)
 #   --with-sound                  turn on the background sound (install-config.sh)
+#   --git-name=, --git-email=, --git-branch=, --defaults
+#                                 passed through to install-git.sh
 #
 # Each script also works on its own.
 
 set -uo pipefail
 
-ALL=() DEPS=() CONFIG=() PARTS=(deps assets config scripts)
+ALL=() DEPS=() CONFIG=() GIT=() PARTS=(deps git assets config scripts)
 for arg in "$@"; do
   case $arg in
     --dry-run)                  ALL+=("$arg") ;;
     --no-flatpak|--no-services) DEPS+=("$arg") ;;
     --with-sddm)                PARTS+=(sddm) ;;
     --with-sound)               CONFIG+=("$arg") ;;
-    -h|--help) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --git-*=*|--defaults)       GIT+=("$arg") ;;
+    -h|--help) sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
   esac
 done
@@ -33,6 +37,8 @@ for part in "${PARTS[@]}"; do
   printf '\n\e[1;35m######## install-%s ########\e[0m\n' "$part"
   if [ "$part" = deps ]; then
     "$REPO/install-deps.sh" "${ALL[@]}" "${DEPS[@]}" || failed+=("$part")
+  elif [ "$part" = git ]; then
+    "$REPO/install-git.sh" "${ALL[@]}" "${GIT[@]}" || failed+=("$part")
   elif [ "$part" = config ]; then
     "$REPO/install-config.sh" "${ALL[@]}" "${CONFIG[@]}" || failed+=("$part")
   else

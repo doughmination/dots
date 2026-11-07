@@ -20,6 +20,7 @@ A swayfx desktop with a "Clockwork" theme pulled from the wallpaper: deep-space 
 ## Install
 
 Clone it anywhere, then run the installer. It links everything into place.
+On Arch, packages missing from the repos come from the AUR with yay or paru (paru gets installed if you have neither).
 
 ```sh
 git clone https://github.com/doughmination/dots ~/dots
@@ -27,11 +28,12 @@ git clone https://github.com/doughmination/dots ~/dots
 ~/dots/install
 ```
 
-The installer runs four scripts, and you can run any of them on its own:
+The installer runs five scripts, and you can run any of them on its own:
 
 | Script | What it does |
 |---|---|
 | `install-deps.sh` | Installs the software (add `--no-flatpak` or `--no-services` to skip those parts) |
+| `install-git.sh` | Sets your git name, email and default branch (asks, or pass `--git-name=`, `--git-email=`, `--git-branch=`; `--defaults` uses User / user@example.com / main) |
 | `install-assets.sh` | Installs the font and the cursor |
 | `install-config.sh` | Links the configs into `~/.config` |
 | `install-scripts.sh` | Links the helper scripts into `~/.local/bin` |
