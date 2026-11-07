@@ -172,7 +172,7 @@ Regenerate with `binaries/keybinds --markdown`.
 ## Tested on
 
 - [x] Void Linux glibc
-- [ ] Arch Linux
+- [x] Arch Linux
 - [ ] Debian
 - [ ] Ubuntu
 - [ ] Fedora
