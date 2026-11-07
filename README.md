@@ -72,7 +72,7 @@ Anything already in the way is renamed to `.bak-<date>`, never deleted.
 | Bluetooth | Bluetooth on/off | Open bluetui | |
 | Volume | Mute | Open pavucontrol | |
 | CPU / RAM | Open btop | | |
-| Picture icon (next to the logo) | Still / animated wallpaper (only plays when plugged in and not in power saver) | | |
+| Picture icon (next to the logo) | Still / animated wallpaper (pauses in power saver or when the battery is at 20% or less) | | |
 | Coffee cup | Stay awake (no auto-lock) | | |
 | Moon | Night light (warm screen) | | |
 | Bell | Notification list (pick one to see it again) | | Do not disturb |

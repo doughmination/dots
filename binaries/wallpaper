@@ -8,8 +8,9 @@
 #   wallpaper sync      play/stop the video to match power (run by waybar-battery)
 #   wallpaper status    JSON for the waybar button
 #
-# Animated mode only actually plays on AC power and outside power-saver;
-# otherwise the still shows and the button turns amber ("paused").
+# Animated mode plays on AC or battery, but pauses in power-saver or when the
+# battery is discharging at 20% or less; then the still shows and the button
+# turns amber ("paused").
 #
 # The still (sway/config "output * bg") always runs underneath, so stopping
 # the video just reveals it. mpvpaper pauses itself while windows cover it.
@@ -21,14 +22,16 @@ mode() { cat "$STATE" 2>/dev/null || echo static; }
 save() { mkdir -p "$(dirname "$STATE")"; echo "$1" > "$STATE"; }
 refresh() { pkill -RTMIN+9 -x waybar; }
 
-# Should the video run right now? Plugged in and not in power-saver.
+# Should the video run right now? Not in power-saver, and no battery
+# discharging at or below LOW percent.
+LOW=20
 power_ok() {
-  ac=0
-  for f in /sys/class/power_supply/*/online; do
-    [ -r "$f" ] && [ "$(cat "$f")" = 1 ] && ac=1
+  [ "$(powerprofilesctl get 2>/dev/null)" != power-saver ] || return 1
+  for b in /sys/class/power_supply/BAT*; do
+    [ -r "$b/capacity" ] || continue
+    [ "$(cat "$b/status")" = Discharging ] && [ "$(cat "$b/capacity")" -le "$LOW" ] && return 1
   done
-  [ "$ac" = 1 ] || return 1
-  [ "$(powerprofilesctl get 2>/dev/null)" != power-saver ]
+  return 0
 }
 
 start_video() {
@@ -47,7 +50,7 @@ case ${1:-status} in
   animated)
     save animated
     if power_ok; then start_video || save static
-    else notify-send "Animated wallpaper" "Paused until you plug in and leave power-saver"
+    else notify-send "Animated wallpaper" "Paused: power-saver is on, or the battery is at ${LOW}% or less"
     fi
     refresh ;;
   toggle)   if [ "$(mode)" = animated ]; then "$0" static; else "$0" animated; fi ;;
@@ -60,7 +63,7 @@ case ${1:-status} in
     fi ;;
   status)
     if [ "$(mode)" = animated ] && ! pgrep -x mpvpaper >/dev/null; then
-      printf '{"text":"<span color=\\"#E8964A\\">\\udb82\\udd3a</span>","tooltip":"Animated wallpaper paused (on battery or power-saver)\\nClick for the still","class":"paused"}\n'
+      printf '{"text":"<span color=\\"#E8964A\\">\\udb82\\udd3a</span>","tooltip":"Animated wallpaper paused (power-saver, or battery at 20%% or less)\\nClick for the still","class":"paused"}\n'
     elif [ "$(mode)" = animated ]; then
       printf '{"text":"<span color=\\"#5FD4F0\\">\\udb82\\udd3a</span>","tooltip":"Animated wallpaper (click for still)","class":"animated"}\n'
     else

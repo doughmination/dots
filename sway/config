@@ -49,6 +49,10 @@ exec --no-startup-id gnome-keyring-daemon --start --components=secrets,ssh,pkcs1
 exec --no-startup-id wl-paste --type text --watch cliphist store
 exec --no-startup-id wl-paste --type image --watch cliphist store
 
+# Give D-Bus services (screen-sharing portal, etc.) the Wayland session vars.
+# Without this xdg-desktop-portal-wlr can't reach sway, so OBS/browsers can't capture the screen.
+exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK DISPLAY
+
 exec /usr/bin/pipewire
 
 # Cursor Style
