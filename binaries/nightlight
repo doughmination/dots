@@ -1,0 +1,21 @@
+#!/bin/sh
+# nightlight: warm the screen to 4000K (wlsunset) for the waybar moon.
+#   nightlight toggle | on | off | status
+on()  { pgrep -x wlsunset >/dev/null || setsid -f wlsunset -T 4001 -t 4000 >/dev/null 2>&1; }
+off() { pkill -x wlsunset; }
+case ${1:-status} in
+  on)  on ;;
+  off) off ;;
+  toggle)
+    if ! command -v wlsunset >/dev/null; then
+      notify-send "Night light" "wlsunset isn't installed (run install-deps.sh)"; exit 1
+    fi
+    if pgrep -x wlsunset >/dev/null; then off; else on; fi
+    sleep 0.3; pkill -RTMIN+12 -x waybar ;;
+  status)
+    if pgrep -x wlsunset >/dev/null; then
+      printf '{"text":"\\udb81\\udd94","tooltip":"Night light on (warm screen)\\nClick to turn off","class":"on"}\n'
+    else
+      printf '{"text":"\\udb81\\udd94","tooltip":"Night light off\\nClick to warm the screen","class":"off"}\n'
+    fi ;;
+esac

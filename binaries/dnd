@@ -1,0 +1,18 @@
+#!/bin/sh
+# dnd: mako do-not-disturb for the waybar bell.
+#   dnd toggle   turn do-not-disturb on/off
+#   dnd status   JSON for waybar (count = notifications waiting while muted)
+# When it's turned off, the waiting notifications pop up again.
+case ${1:-status} in
+  toggle)
+    makoctl mode -t do-not-disturb >/dev/null
+    pkill -RTMIN+10 -x waybar ;;
+  status)
+    if makoctl mode | grep -qx do-not-disturb; then
+      n=$(makoctl list -j 2>/dev/null | jq 'length' 2>/dev/null || echo 0)
+      [ "$n" -gt 0 ] 2>/dev/null && txt="\\udb80\\udc9b $n" || txt="\\udb80\\udc9b"
+      printf '{"text":"%s","tooltip":"Do not disturb is on (%s waiting)\\nClick: notifications · Right-click: turn off","class":"on"}\n' "$txt" "${n:-0}"
+    else
+      printf '{"text":"\\udb80\\udc9a","tooltip":"Notifications on\\nClick: notifications · Right-click: do not disturb","class":"off"}\n'
+    fi ;;
+esac

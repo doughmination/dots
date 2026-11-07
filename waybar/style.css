@@ -50,6 +50,11 @@ tooltip {
 #scratchpad,
 #mpris,
 #clock,
+#custom-recording,
+#custom-updates,
+#idle_inhibitor,
+#custom-nightlight,
+#custom-dnd,
 #memory,
 #cpu,
 #wireplumber,
@@ -79,6 +84,7 @@ tooltip {
   border-color: alpha(@crimson, 0.55);
 }
 #custom-decor.animated { border-color: alpha(@glow, 0.55); }
+#custom-decor.paused   { border-color: alpha(@amber, 0.55); }
 #custom-decor:hover    { background: alpha(@surface2, 0.95); }
 
 #workspaces { padding: 0 4px; }
@@ -121,6 +127,26 @@ tooltip {
   color: @glow;
   border-color: alpha(@glow, 0.55);
   padding: 0 16px;
+}
+
+/* Quick toggles: dim when off, lit when on */
+#idle_inhibitor,
+#custom-nightlight,
+#custom-dnd                  { color: @subtext0; padding: 0 11px; }
+#idle_inhibitor.activated    { color: @peach;  border-color: alpha(@peach, 0.55); }
+#custom-nightlight.on        { color: @amber;  border-color: alpha(@amber, 0.55); }
+#custom-dnd.on               { color: @rose;   border-color: alpha(@rose, 0.55); }
+
+#custom-updates   { color: @gold; }
+
+@keyframes rec-pulse {
+  to { background: alpha(@crimson, 0.35); }
+}
+#custom-recording {
+  color: @text;
+  background: @crimson;
+  border-color: @scarlet;
+  animation: rec-pulse 1s ease-in-out infinite alternate;
 }
 
 #memory               { color: @frost; }

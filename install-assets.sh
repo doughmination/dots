@@ -6,6 +6,7 @@
 #
 # - JetBrainsMono Nerd Font Mono  -> ~/.local/share/fonts/jetbrainsmono-nfm (downloaded)
 # - icons/<cursor theme>/         -> linked into ~/.icons/
+# The SDDM login theme has its own script: install-sddm.sh
 # The wallpaper needs no step: sway/config points straight at sway/background.png.
 # Needs curl, unzip and fontconfig, which install-deps.sh installs.
 
@@ -15,7 +16,7 @@ DRY=0
 for arg in "$@"; do
   case $arg in
     --dry-run) DRY=1 ;;
-    -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
   esac
 done

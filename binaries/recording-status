@@ -1,0 +1,8 @@
+#!/bin/sh
+# recording-status: red dot on the bar while wf-recorder is running.
+# Prints nothing when idle, so waybar hides the module.
+if pgrep -x wf-recorder >/dev/null; then
+  printf '{"text":"\\udb81\\udc4a REC","tooltip":"Recording the screen\\nClick (or Ctrl+Alt+Print) to stop","class":"recording"}\n'
+else
+  echo '{"text":""}'
+fi

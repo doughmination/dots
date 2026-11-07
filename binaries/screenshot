@@ -11,10 +11,15 @@ while getopts scr opt; do
     r)
       if pkill -INT -x wf-recorder; then
         notify-send "Recording saved" "$HOME/Videos"
+        sleep 0.5; pkill -RTMIN+11 -x waybar   # hide the REC dot
       else
         g=$(slurp) || exit 1
+        mkdir -p "$HOME/Videos"
         notify-send "Recording" "Press Ctrl+Alt+Print again to stop"
-        wf-recorder -g "$g" -f "$HOME/Videos/rec-$(date +%F_%H-%M-%S).mp4"
+        wf-recorder -g "$g" -f "$HOME/Videos/rec-$(date +%F_%H-%M-%S).mp4" &
+        sleep 0.5; pkill -RTMIN+11 -x waybar   # show the REC dot
+        wait
+        pkill -RTMIN+11 -x waybar
       fi
       exit ;;
     *) exit 1 ;;

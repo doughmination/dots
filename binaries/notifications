@@ -1,0 +1,37 @@
+#!/bin/sh
+# notifications: a small notification centre in fuzzel (the waybar bell's left click).
+# Lists notifications waiting behind do-not-disturb (●) and recent history.
+# Picking one shows it again; "Dismiss waiting" clears the waiting ones.
+command -v jq >/dev/null || { notify-send "Notifications" "jq isn't installed"; exit 1; }
+
+# kind<TAB>app<TAB>summary<TAB>body  (markup stripped, one line each)
+rows() {
+  makoctl "$1" -j 2>/dev/null | jq -r --arg k "$2" '.[]
+    | select(.app_name != "calendar" and .app_name != "notifications")
+    | [$k, (.app_name // "app"), (.summary // ""),
+       ((.body // "") | gsub("<[^>]*>"; "") | gsub("\\s+"; " ") | .[0:90])] | @tsv'
+}
+waiting=$(rows list waiting)
+history=$(rows history history)
+all=$(printf '%s\n%s\n' "$waiting" "$history" | grep -v '^$')
+
+if [ -z "$all" ]; then
+  notify-send -a notifications "Notifications" "Nothing here yet"
+  exit 0
+fi
+
+menu=$(printf '%s\n' "$all" | awk -F'\t' '{
+  mark = ($1 == "waiting") ? "●" : " "
+  line = mark " " $2 ": " $3; if ($4 != "") line = line "  " $4
+  print line }')
+[ -n "$waiting" ] && menu=$(printf '󰎟  Dismiss waiting\n%s' "$menu")
+
+pick=$(printf '%s\n' "$menu" | fuzzel --dmenu --index --width 70 --lines 14 --prompt "notifications ") || exit 0
+
+if [ -n "$waiting" ]; then
+  [ "$pick" = 0 ] && { makoctl dismiss -a; pkill -RTMIN+10 -x waybar; exit 0; }
+  pick=$((pick - 1))
+fi
+row=$(printf '%s\n' "$all" | sed -n "$((pick + 1))p")
+app=$(printf '%s' "$row" | cut -f2); summary=$(printf '%s' "$row" | cut -f3); body=$(printf '%s' "$row" | cut -f4)
+notify-send -a notifications "$app · $summary" "$body"

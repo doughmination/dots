@@ -27,6 +27,19 @@ window {
   box-shadow: 0 0 24px alpha(@glow, 0.45);
 }
 
+/* Round avatar above the clock (avatar.png next to this file; layout.ui adds the box) */
+#avatar {
+  min-width: 112px;
+  min-height: 112px;
+  margin-bottom: 14px;
+  background-image: url("avatar.png");
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  border: 2px solid @glow;
+  box-shadow: 0 0 16px alpha(@glow, 0.45);
+}
+
 #clock-label {
   font-size: 72px;
   font-weight: bold;
@@ -83,6 +96,7 @@ window {
   box-shadow: none;
 }
 
+#unlock-button label  { color: @bg; }   /* beat the "* { color }" rule */
 #unlock-button:hover  { background-color: @frost; }
 #unlock-button:active { background-color: @gold; }
 

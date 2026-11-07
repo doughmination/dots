@@ -33,6 +33,9 @@
 # --- Scripts (linked into ~/.local/bin by install-scripts.sh) ---
 !/binaries/
 
+# --- Login theme (installed to /usr/share/sddm/themes by install-assets.sh) ---
+!/sddm/
+
 # --- Cursor theme (linked into ~/.icons by install-assets.sh) ---
 !/icons/
 

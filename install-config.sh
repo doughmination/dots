@@ -38,7 +38,7 @@ fi
 # Every "!/name" line in .gitignore is a tracked config, minus the repo's own
 # files and the assets that install-assets.sh handles.
 mapfile -t ITEMS < <(sed -n 's|^!/\([^/]*\)/\{0,1\}$|\1|p' "$REPO/.gitignore" |
-  grep -v -x -E '\.gitignore|README\.md|screenshot\.png|install|install-.*\.sh|icons|binaries')
+  grep -v -x -E '\.gitignore|README\.md|screenshot\.png|install|install-.*\.sh|icons|binaries|sddm')
 
 stamp=$(date +%Y%m%d-%H%M%S)
 run mkdir -p "$TARGET"

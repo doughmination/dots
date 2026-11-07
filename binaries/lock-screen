@@ -16,4 +16,7 @@ if command -v magick >/dev/null && [ -f "$wall" ]; then
   bg="$blurred"
 fi
 
-exec gtklock -d -b "$bg"
+layout="${XDG_CONFIG_HOME:-$HOME/.config}/gtklock/layout.ui"
+[ -f "$layout" ] && set -- -x "$layout"
+
+exec gtklock -d -b "$bg" "$@"

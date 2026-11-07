@@ -1,0 +1,33 @@
+#!/bin/sh
+# calendar: show this month as a notification (the waybar clock's click).
+# Click the clock again to close it. Colors match the Clockwork palette:
+# month cyan, weekdays gold, today red.
+ID_FILE="${XDG_RUNTIME_DIR:-/tmp}/waybar-calendar.id"
+
+# Second click closes the open calendar
+if [ -f "$ID_FILE" ] && makoctl list -j 2>/dev/null | grep -q "\"id\": *$(cat "$ID_FILE")\b"; then
+  makoctl dismiss -n "$(cat "$ID_FILE")"
+  rm -f "$ID_FILE"
+  exit 0
+fi
+
+today=$(date +%-d)
+body=$(cal | awk -v t="$today" '
+  NR == 1 { next }                                     # month title is added below
+  NR == 2 { printf "<span color=\"#D4B072\"><b>%s</b></span>\n", $0; next }
+  NF == 0 { next }
+  {
+    out = ""
+    for (i = 1; i <= length($0); i += 3) {             # cal uses 3-char columns
+      cell = substr($0, i, 3); d = cell; gsub(/ /, "", d)
+      if (d == t) { k = index(cell, d)
+                    cell = substr(cell, 1, k - 1) "<span color=\"#E0485C\"><b><u>" d "</u></b></span>" substr(cell, k + length(d)) }
+      out = out cell
+    }
+    sub(/ +$/, "", out); print out
+  }')
+
+title="<span color=\"#5FD4F0\"><b>$(date '+%B %Y')</b></span>"
+id=$(notify-send -p -t 15000 -a calendar "Calendar" "$title
+$body")
+echo "$id" > "$ID_FILE"

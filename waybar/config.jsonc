@@ -10,7 +10,7 @@
 
   "modules-left": ["custom/launcher", "custom/decor", "sway/workspaces", "sway/mode", "sway/scratchpad", "mpris"],
   "modules-center": ["clock"],
-  "modules-right": ["memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "custom/power"],
+  "modules-right": ["custom/recording", "custom/updates", "idle_inhibitor", "custom/nightlight", "custom/dnd", "memory", "cpu", "wireplumber", "backlight", "network", "bluetooth", "custom/battery", "tray", "custom/power"],
 
   "custom/launcher": {
     "exec": "~/.config/waybar/scripts/distro-icon",
@@ -54,19 +54,49 @@
   },
 
   "clock": {
-    "format": "{:%H:%M}",
-    "format-alt": "{:%a %d %b  %H:%M}",
-    "tooltip-format": "<tt>{calendar}</tt>",
-    "calendar": {
-      "mode": "month",
-      "weeks-pos": "left",
-      "format": {
-        "months": "<span color='#5FD4F0'><b>{}</b></span>",
-        "weekdays": "<span color='#D4B072'><b>{}</b></span>",
-        "weeks": "<span color='#4A5A72'>W{}</span>",
-        "today": "<span color='#E0485C'><b><u>{}</u></b></span>"
-      }
-    }
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip": false,
+    "on-click": "~/.local/bin/calendar"
+  },
+
+  "custom/recording": {
+    "exec": "~/.local/bin/recording-status",
+    "return-type": "json",
+    "interval": 5,
+    "signal": 11,
+    "on-click": "~/.local/bin/screenshot -r"
+  },
+
+  "custom/updates": {
+    "exec": "~/.local/bin/updates status",
+    "return-type": "json",
+    "interval": 3600,
+    "signal": 13,
+    "on-click": "~/.local/bin/updates run"
+  },
+
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
+    "tooltip-format-activated": "Staying awake (no auto-lock)\nClick to allow locking",
+    "tooltip-format-deactivated": "Auto-lock after 5 min\nClick to stay awake"
+  },
+
+  "custom/nightlight": {
+    "exec": "~/.local/bin/nightlight status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 12,
+    "on-click": "~/.local/bin/nightlight toggle"
+  },
+
+  "custom/dnd": {
+    "exec": "~/.local/bin/dnd status",
+    "return-type": "json",
+    "interval": 5,
+    "signal": 10,
+    "on-click": "~/.local/bin/notifications",
+    "on-click-right": "~/.local/bin/dnd toggle"
   },
 
   "memory": {

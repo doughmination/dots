@@ -1,0 +1,51 @@
+#!/bin/sh
+# keybinds: every sway shortcut, read live from ~/.config/sway/config.
+#   keybinds             show them in fuzzel; picking one runs it
+#   keybinds --markdown  print a Markdown table (for the README)
+#   keybinds --list      print plain "keys  action" lines
+
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/sway/config"
+
+parse() {
+  awk '
+    function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t]+$/, "", s); return s }
+    /^[ \t]*set[ \t]+\$/ {
+      name = $2; val = $0; sub(/^[ \t]*set[ \t]+\$[^ \t]+[ \t]+/, "", val)
+      vars[name] = val; order[++nv] = name; next
+    }
+    /^[ \t]*mode[ \t]+"/ { m = $0; sub(/^[^"]*"/, "", m); sub(/".*/, "", m); mode = m; next }
+    /^[ \t]*}/ { mode = ""; next }
+    /^[ \t]*bindsym[ \t]/ {
+      line = trim($0); sub(/^bindsym[ \t]+/, "", line)
+      while (line ~ /^--[a-z-]+[ \t]/) sub(/^--[a-z-]+[ \t]+/, "", line)
+      key = line; sub(/[ \t].*/, "", key)
+      cmd = line; sub(/^[^ \t]+[ \t]+/, "", cmd)
+      for (pass = 0; pass < 4; pass++)                 # resolve nested $vars,
+        for (len = 40; len > 0; len--)                 # longest names first
+          for (i = 1; i <= nv; i++) if (length(order[i]) == len) {
+            pat = order[i]; gsub(/\$/, "\\$", pat); gsub(pat, vars[order[i]], cmd)
+          }
+      for (i = 1; i <= nv; i++) { pat = order[i]; gsub(/\$/, "\\$", pat); gsub(pat, vars[order[i]], key) }
+      gsub(/Mod4/, "Super", key); gsub(/Mod1/, "Alt", key)
+      gsub(/--no-startup-id[ \t]+/, "", cmd)
+      shown = cmd; sub(/^exec[ \t]+/, "", shown)
+      if (length(shown) > 70) shown = substr(shown, 1, 67) "..."
+      if (mode != "") key = mode ": " key
+      printf "%s\t%s\t%s\n", key, shown, (mode == "" ? cmd : "")
+    }
+  ' "$CONF"
+}
+
+case ${1:-} in
+  --markdown)
+    echo "| Keys | Action |"; echo "|---|---|"
+    parse | awk -F'\t' '{ a = $2; gsub(/\|/, "\\|", a); printf "| `%s` | `%s` |\n", $1, a }' ;;
+  --list)
+    parse | awk -F'\t' '{ printf "%-30s %s\n", $1, $2 }' ;;
+  *)
+    data=$(parse)
+    pick=$(printf '%s\n' "$data" | awk -F'\t' '{ printf "%-30s %s\n", $1, $2 }' |
+      fuzzel --dmenu --index --width 80 --lines 18 --prompt "keys ") || exit 0
+    cmd=$(printf '%s\n' "$data" | sed -n "$((pick + 1))p" | cut -f3)
+    [ -n "$cmd" ] && swaymsg -- "$cmd" >/dev/null ;;
+esac

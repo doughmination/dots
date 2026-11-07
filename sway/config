@@ -121,6 +121,7 @@ bindsym $mod+Mod1+l exec $lock
 bindsym $mod+n exec $notification
 bindsym $mod+v exec $clipboard
 bindsym $mod+Shift+v exec $clipwipe
+bindsym $mod+slash exec ~/.local/bin/keybinds
 # $mod+grave (dashboard) is unbound for now.
 
 floating_modifier $mod normal

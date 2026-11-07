@@ -1,0 +1,21 @@
+#!/bin/sh
+# updates: count pending package updates for the waybar icon.
+#   updates status   JSON for waybar (hidden when there's nothing to update)
+#   updates run      open kitty and run the upgrade
+# Void only for now; other distros just hide the icon.
+case ${1:-status} in
+  status)
+    command -v xbps-install >/dev/null || { echo '{"text":""}'; exit 0; }
+    list=$(xbps-install -Mun 2>/dev/null)
+    n=$(printf '%s' "$list" | grep -c .)
+    if [ "$n" -gt 0 ]; then
+      names=$(printf '%s\n' "$list" | awk '{print $1}' | head -15 | sed 's/$/\\n/' | tr -d '\n')
+      [ "$n" -gt 15 ] && names="${names}…and $((n - 15)) more\\n"
+      printf '{"text":"\\udb80\\udfd5 %s","tooltip":"%s update(s) waiting\\n%sClick to update","class":"pending"}\n' "$n" "$n" "$names"
+    else
+      echo '{"text":""}'
+    fi ;;
+  run)
+    kitty --title "System update" sh -c 'sudo xbps-install -Su; printf "\nDone. Press Enter to close."; read _'
+    pkill -RTMIN+13 -x waybar ;;
+esac

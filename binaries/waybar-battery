@@ -25,8 +25,12 @@ case $1 in
 esac
 if [ -n "$1" ]; then
   pkill -RTMIN+8 -x waybar
+  ~/.local/bin/wallpaper sync &
   exit
 fi
+
+# Keep the animated wallpaper in step with power (cheap; exits early if unused)
+~/.local/bin/wallpaper sync >/dev/null 2>&1 &
 
 cap=$(cat "$BAT/capacity")
 status=$(cat "$BAT/status")
