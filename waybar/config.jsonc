@@ -21,9 +21,11 @@
   },
 
   "custom/decor": {
-    "format": "<span color='#E0485C'></span>",
-    "rotate": 90,
-    "tooltip": false
+    "exec": "~/.local/bin/wallpaper status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 9,
+    "on-click": "~/.local/bin/wallpaper toggle"
   },
 
   "sway/workspaces": {

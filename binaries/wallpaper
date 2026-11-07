@@ -1,0 +1,43 @@
+#!/bin/sh
+# wallpaper: switch between the still and the animated wallpaper.
+#
+#   wallpaper toggle    flip static <-> animated (the waybar decor button)
+#   wallpaper static    still image only
+#   wallpaper animated  play sway/background.webm on top of the still
+#   wallpaper restore   start whichever mode was last chosen (run at login)
+#   wallpaper status    JSON for the waybar button
+#
+# The still (sway/config "output * bg") always runs underneath, so stopping
+# the video just reveals it. mpvpaper pauses itself while windows cover it.
+
+VIDEO="$HOME/.config/sway/background.webm"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper-mode"
+
+mode() { cat "$STATE" 2>/dev/null || echo static; }
+save() { mkdir -p "$(dirname "$STATE")"; echo "$1" > "$STATE"; }
+refresh() { pkill -RTMIN+9 -x waybar; }
+
+start_video() {
+  pgrep -x mpvpaper >/dev/null && return 0
+  if ! command -v mpvpaper >/dev/null; then
+    notify-send "Animated wallpaper" "mpvpaper isn't installed (run install-deps.sh)"
+    return 1
+  fi
+  [ -f "$VIDEO" ] || { notify-send "Animated wallpaper" "Missing $VIDEO"; return 1; }
+  setsid -f mpvpaper -p -o "no-audio loop hwdec=auto panscan=1.0" '*' "$VIDEO" \
+    >/dev/null 2>&1
+}
+
+case ${1:-status} in
+  static)   pkill -x mpvpaper; save static; refresh ;;
+  animated) start_video && save animated; refresh ;;
+  toggle)   if [ "$(mode)" = animated ]; then "$0" static; else "$0" animated; fi ;;
+  restore)  [ "$(mode)" = animated ] && start_video ;;
+  status)
+    if [ "$(mode)" = animated ]; then
+      printf '{"text":"<span color=\\"#5FD4F0\\">\\udb82\\udd3a</span>","tooltip":"Animated wallpaper (click for still)","class":"animated"}\n'
+    else
+      printf '{"text":"<span color=\\"#E0485C\\">\\udb80\\udee9</span>","tooltip":"Still wallpaper (click to animate)","class":"static"}\n'
+    fi ;;
+  *) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

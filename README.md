@@ -46,6 +46,7 @@ Anything already in the way is renamed to `.bak-<date>`, never deleted.
 | Bluetooth | Bluetooth on/off | Open bluetui | |
 | Volume | Mute | Open pavucontrol | |
 | CPU / RAM | Open btop | | |
+| Picture icon (next to the logo) | Still / animated wallpaper | | |
 
 ## Tested on
 

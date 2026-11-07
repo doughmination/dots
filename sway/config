@@ -23,6 +23,7 @@ set $clipwipe cliphist wipe
 ### Startup
 #
 exec waybar
+exec ~/.local/bin/wallpaper restore
 exec mako
 exec --no-startup-id autotiling
 
