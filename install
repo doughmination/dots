@@ -9,18 +9,20 @@
 #   ./install --dry-run           print every command without running anything
 #   --no-flatpak, --no-services   passed through to install-deps.sh
 #   --with-sddm                   also install the Clockwork login theme (install-sddm.sh)
+#   --with-sound                  turn on the background sound (install-config.sh)
 #
 # Each script also works on its own.
 
 set -uo pipefail
 
-ALL=() DEPS=() PARTS=(deps assets config scripts)
+ALL=() DEPS=() CONFIG=() PARTS=(deps assets config scripts)
 for arg in "$@"; do
   case $arg in
     --dry-run)                  ALL+=("$arg") ;;
     --no-flatpak|--no-services) DEPS+=("$arg") ;;
     --with-sddm)                PARTS+=(sddm) ;;
-    -h|--help) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --with-sound)               CONFIG+=("$arg") ;;
+    -h|--help) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
   esac
 done
@@ -31,6 +33,8 @@ for part in "${PARTS[@]}"; do
   printf '\n\e[1;35m######## install-%s ########\e[0m\n' "$part"
   if [ "$part" = deps ]; then
     "$REPO/install-deps.sh" "${ALL[@]}" "${DEPS[@]}" || failed+=("$part")
+  elif [ "$part" = config ]; then
+    "$REPO/install-config.sh" "${ALL[@]}" "${CONFIG[@]}" || failed+=("$part")
   else
     "$REPO/install-$part.sh" "${ALL[@]}" || failed+=("$part")
   fi

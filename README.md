@@ -14,6 +14,7 @@ A swayfx desktop with a "Clockwork" theme pulled from the wallpaper: deep-space 
 - **kitty** (terminal) with an **oh-my-posh** prompt
 - **fuzzel** (app launcher), **mako** (notifications), **gtklock** (lock screen)
 - An optional **SDDM** login screen to match
+- An optional looping **background sound** (plays only while plugged in and out of power saver)
 - The **sandrone-linux** cursor (my own)
 
 ## Install
@@ -46,6 +47,17 @@ The Clockwork SDDM theme has its own script and works without the rest of the do
 ```
 
 Or add `--with-sddm` to `./install` to get everything at once.
+
+### Background sound (optional)
+
+Off by default. Turn it on with `./install --with-sound`, or edit these lines in `sway/config` and reload sway:
+
+```
+set $ambient_sound on
+set $ambient_volume 30
+```
+
+**Super+M** mutes it until the next reload.
 
 Anything already in the way is renamed to `.bak-<date>`, never deleted.
 
@@ -88,6 +100,7 @@ Press **Super+/** to search every shortcut (picking one runs it). The full list:
 | `Super+v` | `cliphist list \| fuzzel --dmenu --prompt "clip " \| cliphist decode \|...` |
 | `Super+Shift+v` | `cliphist wipe` |
 | `Super+slash` | `~/.local/bin/keybinds` |
+| `Super+m` | `~/.local/bin/ambient toggle` |
 | `Super+Shift+r` | `reload` |
 | `Super+Shift+e` | `swaynag -t warning -m 'You pressed the exit shortcut. Do you really...` |
 | `Ctrl+Alt+Delete` | `~/.local/bin/powermenu` |

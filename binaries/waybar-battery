@@ -26,11 +26,13 @@ esac
 if [ -n "$1" ]; then
   pkill -RTMIN+8 -x waybar
   ~/.local/bin/wallpaper sync &
+  ~/.local/bin/ambient sync &
   exit
 fi
 
-# Keep the animated wallpaper in step with power (cheap; exits early if unused)
+# Keep the animated wallpaper and background sound in step with power (cheap; exit early if unused)
 ~/.local/bin/wallpaper sync >/dev/null 2>&1 &
+~/.local/bin/ambient sync >/dev/null 2>&1 &
 
 cap=$(cat "$BAT/capacity")
 status=$(cat "$BAT/status")

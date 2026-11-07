@@ -24,6 +24,12 @@ set $clipwipe cliphist wipe
 #
 exec waybar
 exec ~/.local/bin/wallpaper restore
+
+# Background sound: on or off, volume 0-100. Plays sway/background-sound.*
+# while plugged in and out of power-saver. Super+M mutes it until the next reload.
+set $ambient_sound off
+set $ambient_volume 30
+exec_always ~/.local/bin/ambient config $ambient_sound $ambient_volume
 exec mako
 exec --no-startup-id autotiling
 
@@ -122,6 +128,7 @@ bindsym $mod+n exec $notification
 bindsym $mod+v exec $clipboard
 bindsym $mod+Shift+v exec $clipwipe
 bindsym $mod+slash exec ~/.local/bin/keybinds
+bindsym $mod+m exec ~/.local/bin/ambient toggle
 # $mod+grave (dashboard) is unbound for now.
 
 floating_modifier $mod normal

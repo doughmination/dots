@@ -62,7 +62,7 @@ echo "Detected ${PRETTY_NAME:-$ID} (using the $FAMILY package list)"
 # apps, portals, build tools for the cargo steps below.
 case $FAMILY in
 void)
-  PKGS=(swayfx Waybar swaybg mpvpaper wlsunset swayidle autotiling polkit-gnome gnome-keyring
+  PKGS=(swayfx Waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify fuzzel gtklock ImageMagick kitty yazi
         wl-clipboard cliphist pipewire wireplumber pavucontrol
         brightnessctl playerctl power-profiles-daemon
@@ -70,7 +70,7 @@ void)
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
         jq curl unzip git fontconfig rustup) ;;
 arch)
-  PKGS=(swayfx waybar swaybg mpvpaper wlsunset swayidle autotiling polkit-gnome gnome-keyring
+  PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify fuzzel gtklock imagemagick kitty yazi
         wl-clipboard cliphist pipewire pipewire-pulse wireplumber pavucontrol
         brightnessctl playerctl power-profiles-daemon
@@ -78,7 +78,7 @@ arch)
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
         jq curl unzip git fontconfig base-devel rustup) ;;
 fedora)
-  PKGS=(swayfx waybar swaybg mpvpaper wlsunset swayidle autotiling polkit-gnome gnome-keyring
+  PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify fuzzel gtklock ImageMagick kitty yazi
         wl-clipboard cliphist pipewire wireplumber pavucontrol
         brightnessctl playerctl power-profiles-daemon
@@ -86,7 +86,7 @@ fedora)
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
         jq curl unzip git fontconfig gcc rustup) ;;
 debian)
-  PKGS=(swayfx waybar swaybg mpvpaper wlsunset swayidle autotiling policykit-1-gnome gnome-keyring
+  PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling policykit-1-gnome gnome-keyring
         mako-notifier libnotify-bin fuzzel gtklock imagemagick kitty yazi
         wl-clipboard cliphist pipewire pipewire-pulse wireplumber pavucontrol
         brightnessctl playerctl power-profiles-daemon
@@ -94,7 +94,7 @@ debian)
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
         jq curl unzip git fontconfig build-essential rustup) ;;
 suse)
-  PKGS=(swayfx waybar swaybg mpvpaper wlsunset swayidle autotiling polkit-gnome gnome-keyring
+  PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify-tools fuzzel gtklock ImageMagick kitty yazi
         wl-clipboard cliphist pipewire wireplumber pavucontrol
         brightnessctl playerctl power-profiles-daemon

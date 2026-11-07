@@ -3,6 +3,7 @@
 #
 #   ./install-config.sh            link every config folder/file into ~/.config
 #   ./install-config.sh --dry-run  print the commands without running them
+#   ./install-config.sh --with-sound  turn on the background sound in sway/config
 #
 # If the repo already *is* ~/.config there is nothing to do.
 # If you cloned it somewhere else (e.g. ~/dotfiles), each config the
@@ -11,11 +12,12 @@
 
 set -uo pipefail
 
-DRY=0
+DRY=0 SOUND=0
 for arg in "$@"; do
   case $arg in
     --dry-run) DRY=1 ;;
-    -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --with-sound) SOUND=1 ;;
+    -h|--help) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
   esac
 done
@@ -28,6 +30,13 @@ run()  { printf '  $ %s\n' "$*"; [ "$DRY" = 1 ] || "$@"; }
 REPO=$(cd "$(dirname "$0")" && pwd -P)
 TARGET="${XDG_CONFIG_HOME:-$HOME/.config}"
 [ "$DRY" = 1 ] && echo "Dry run: nothing will be changed."
+
+if [ "$SOUND" = 1 ]; then
+  step "Background sound: on"
+  run sed -i 's/^set \$ambient_sound .*/set $ambient_sound on/' "$REPO/sway/config"
+  ls "$REPO"/sway/background-sound.* >/dev/null 2>&1 ||
+    warn "No sway/background-sound.* file yet; add one and it'll start playing"
+fi
 
 step "Linking configs into $TARGET"
 if [ "$REPO" = "$(cd "$TARGET" 2>/dev/null && pwd -P)" ]; then

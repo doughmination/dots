@@ -1,0 +1,74 @@
+#!/bin/sh
+# ambient: looping background sound for the desktop.
+#
+#   ambient config on|off [volume]  apply the sway/config setting (sway runs this)
+#   ambient toggle                  mute/unmute for now (Super+M); a sway reload resets it
+#   ambient sync                    start/stop to match power (run by waybar-battery)
+#   ambient off                     stop it until sway reloads
+#
+# Plays sway/background-sound.* with mpv, only while plugged in and not in
+# power-saver (same rule as the animated wallpaper). No sound file = no-op.
+
+DIR="${XDG_CONFIG_HOME:-$HOME/.config}/sway"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
+ENABLED="$STATE/ambient-enabled"     # "on" or "off", from sway/config
+VOLUME="$STATE/ambient-volume"
+MUTED="$STATE/ambient-muted"         # exists while muted with Super+M
+PIDF="${XDG_RUNTIME_DIR:-/tmp}/ambient-sound.pid"
+
+sound() { for f in "$DIR"/background-sound.*; do [ -f "$f" ] && { echo "$f"; return; }; done; }
+
+running() { [ -f "$PIDF" ] && kill -0 "$(cat "$PIDF")" 2>/dev/null; }
+
+power_ok() {
+  ac=0
+  for f in /sys/class/power_supply/*/online; do
+    [ -r "$f" ] && [ "$(cat "$f")" = 1 ] && ac=1
+  done
+  [ "$ac" = 1 ] || return 1
+  [ "$(powerprofilesctl get 2>/dev/null)" != power-saver ]
+}
+
+start() {
+  running && return 0
+  f=$(sound); [ -n "$f" ] || return 0
+  command -v mpv >/dev/null || return 0
+  vol=$(cat "$VOLUME" 2>/dev/null || echo 30)
+  PIDF="$PIDF" setsid -f sh -c 'echo $$ > "$PIDF"; exec mpv --no-video --no-terminal --really-quiet --loop-file=inf --volume="$1" "$2"' _ "$vol" "$f"
+}
+
+stop() { running && kill "$(cat "$PIDF")"; rm -f "$PIDF"; }
+
+wanted() {
+  [ "$(cat "$ENABLED" 2>/dev/null)" = on ] && [ ! -e "$MUTED" ] && power_ok
+}
+
+mkdir -p "$STATE"
+case ${1:-sync} in
+  config)
+    echo "${2:-off}" > "$ENABLED"
+    case ${3:-} in ''|*[!0-9]*) ;; *) echo "$3" > "$VOLUME" ;; esac
+    rm -f "$MUTED"                       # a reload re-applies the config
+    stop
+    if wanted; then start
+    elif [ "${2:-off}" = on ] && [ -n "$(sound)" ]; then
+      notify-send -a ambient "Background sound" "On, waiting until you're plugged in and out of power-saver"
+    fi ;;
+  toggle)
+    if [ -e "$MUTED" ] || ! running; then
+      rm -f "$MUTED"
+      if [ "$(cat "$ENABLED" 2>/dev/null)" != on ]; then
+        notify-send "Background sound" "Off in sway/config (set \$ambient_sound on)"
+      elif [ -z "$(sound)" ]; then
+        notify-send "Background sound" "No sway/background-sound.* file"
+      elif ! power_ok; then
+        notify-send "Background sound" "Waits until you're plugged in and out of power-saver"
+      else start
+      fi
+    else
+      touch "$MUTED"; stop
+    fi ;;
+  sync)  if wanted; then start; else stop; fi ;;
+  off)   touch "$MUTED"; stop ;;
+  *) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac
