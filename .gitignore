@@ -18,7 +18,8 @@
 !/swaylock/
 !/gtklock/
 
-# --- Terminal + prompt ---
+# --- Terminal + prompt (bashrc is copied to ~/.bashrc by install-config.sh) ---
+!/bashrc
 !/kitty/
 !/omp/
 !/hyfetch.json
@@ -30,13 +31,13 @@
 !/gtkrc-2.0
 !/xsettingsd/
 
-# --- Scripts (linked into ~/.local/bin by install-scripts.sh) ---
+# --- Scripts (copied into ~/.local/bin by install-scripts.sh) ---
 !/binaries/
 
 # --- Login theme (installed to /usr/share/sddm/themes by install-assets.sh) ---
 !/sddm/
 
-# --- Cursor theme (linked into ~/.icons by install-assets.sh) ---
+# --- Cursor theme (copied into ~/.icons by install-assets.sh) ---
 !/icons/
 
 # --- Monitors (they save configs here once you change a setting) ---

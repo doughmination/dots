@@ -5,7 +5,7 @@
 #   ./install-assets.sh --dry-run  print the commands without running them
 #
 # - JetBrainsMono Nerd Font Mono  -> ~/.local/share/fonts/jetbrainsmono-nfm (downloaded)
-# - icons/<cursor theme>/         -> linked into ~/.icons/
+# - icons/<cursor theme>/         -> copied into ~/.icons/
 # The SDDM login theme has its own script: install-sddm.sh
 # The wallpaper needs no step: sway/config points straight at sway/background.png.
 # Needs curl, unzip and fontconfig, which install-deps.sh installs.
@@ -26,7 +26,7 @@ step() { printf '\n%s==> %s%s\n' "$c_head" "$*" "$c_off"; }
 warn() { printf '%s  ! %s%s\n' "$c_warn" "$*" "$c_off"; }
 run()  { printf '  $ %s\n' "$*"; [ "$DRY" = 1 ] || "$@"; }
 
-REPO=$(cd "$(dirname "$0")" && pwd)
+REPO=$(cd "$(dirname "$0")" && pwd -P)
 [ "$DRY" = 1 ] && echo "Dry run: nothing will be changed."
 
 # ---------- Font ----------
@@ -54,18 +54,24 @@ fi
 
 # ---------- Cursor themes ----------
 step "Cursor themes -> ~/.icons"
+stamp=$(date +%Y%m%d-%H%M%S)
 for theme in "$REPO"/icons/*/; do
   [ -d "$theme" ] || continue
   theme=${theme%/}
   name=$(basename "$theme") dest="$HOME/.icons/$name"
-  if [ "$(readlink "$dest" 2>/dev/null)" = "$theme" ]; then
-    echo "  $name already linked"
+  if [ -L "$dest" ] && [[ $(readlink -f "$dest") == "$REPO"/* ]]; then
+    echo "  $name is a link into the repo, replacing it with a copy"
+    run rm "$dest"
   elif [ -e "$dest" ] || [ -L "$dest" ]; then
-    warn "$dest already exists and isn't a link to this repo; left it alone"
-  else
-    run mkdir -p "$HOME/.icons"
-    run ln -s "$theme" "$dest"
+    if diff -rq "$theme" "$dest" >/dev/null 2>&1; then
+      echo "  $name already up to date"
+      continue
+    fi
+    warn "$name exists, moving it to $name.bak-$stamp"
+    run mv "$dest" "$dest.bak-$stamp"
   fi
+  run mkdir -p "$HOME/.icons"
+  run cp -a "$theme" "$dest"
 done
 
 step "Done"

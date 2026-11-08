@@ -19,7 +19,7 @@ A swayfx desktop with a "Clockwork" theme pulled from the wallpaper: deep-space 
 
 ## Install
 
-Clone it anywhere, then run the installer. It links everything into place.
+Clone it anywhere, then run the installer. It copies everything into place, so you can delete the clone afterwards (keep it if you want to pull updates and re-run the installer).
 On Arch, packages missing from the repos come from the AUR with yay or paru (paru gets installed if you have neither).
 
 ```sh
@@ -35,8 +35,8 @@ The installer runs five scripts, and you can run any of them on its own:
 | `install-deps.sh` | Installs the software (add `--no-flatpak` or `--no-services` to skip those parts) |
 | `install-git.sh` | Sets your git name, email and default branch (asks, or pass `--git-name=`, `--git-email=`, `--git-branch=`; `--defaults` uses User / user@example.com / main) |
 | `install-assets.sh` | Installs the font and the cursor |
-| `install-config.sh` | Links the configs into `~/.config` |
-| `install-scripts.sh` | Links the helper scripts into `~/.local/bin` |
+| `install-config.sh` | Copies the configs into `~/.config` and `bashrc` to `~/.bashrc` |
+| `install-scripts.sh` | Copies the helper scripts into `~/.local/bin` |
 
 ### Login screen (optional)
 
@@ -52,7 +52,7 @@ Or add `--with-sddm` to `./install` to get everything at once.
 
 ### Background sound (optional)
 
-Off by default. Turn it on with `./install --with-sound`, or edit these lines in `sway/config` and reload sway:
+Off by default. Turn it on with `./install --with-sound`, or edit these lines in `~/.config/sway/config` and reload sway:
 
 ```
 set $ambient_sound on

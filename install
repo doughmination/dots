@@ -3,8 +3,8 @@
 #   1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
 #   2. install-git.sh     git name, email and default branch
 #   3. install-assets.sh  font and cursor themes
-#   4. install-config.sh  link configs into ~/.config
-#   5. install-scripts.sh link binaries/ into ~/.local/bin
+#   4. install-config.sh  copy configs into ~/.config, bashrc to ~/.bashrc
+#   5. install-scripts.sh copy binaries/ into ~/.local/bin
 #
 #   ./install                     everything
 #   ./install --dry-run           print every command without running anything
@@ -14,7 +14,8 @@
 #   --git-name=, --git-email=, --git-branch=, --defaults
 #                                 passed through to install-git.sh
 #
-# Each script also works on its own.
+# Each script also works on its own. Everything is copied, so the clone can
+# be deleted afterwards.
 
 set -uo pipefail
 
