@@ -43,7 +43,7 @@ fi
 # Every "!/name" line in .gitignore is a tracked config, minus the repo's own
 # files and the assets that install-assets.sh handles.
 mapfile -t ITEMS < <(sed -n 's|^!/\([^/]*\)/\{0,1\}$|\1|p' "$REPO/.gitignore" |
-  grep -v -x -E '\.gitignore|\.github|README\.md|screenshot\.png|install.*|icons|binaries|sddm|bashrc')
+  grep -v -x -E '\.gitignore|\.github|README\.md|screenshot\.png|index\.html|site\.css|install.*|icons|binaries|sddm|bashrc')
 
 # place <src> <dest> <label>: copy src to dest. An old link into the repo is
 # swapped for a copy, an identical copy is left alone, anything else is
