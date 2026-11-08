@@ -53,6 +53,20 @@ Everything is copied, so a clone can be deleted afterwards.
 EOF
 }
 
+# Clockwork colours: glow cyan, gold, subtext grey
+banner() {
+  local glow=$'\e[1;38;2;95;212;240m'
+  local gold=$'\e[38;2;212;176;114m'
+  local muted=$'\e[38;2;138;154;176m'
+  local off=$'\e[0m'
+
+  printf '\n'
+  printf '  %sClockwork Dots%s - A theme inspired by Sandrone\n' "$glow" "$off"
+  printf '  %sby Clove Twilight (doughmination)%s\n' "$gold" "$off"
+  printf '  %s%s%s\n' "$muted" "$SITE" "$off"
+  printf '\n'
+}
+
 # Wrapped in a function so bash reads the whole script before running any of
 # it, which matters when it's piped in from curl
 main() {
@@ -79,6 +93,8 @@ main() {
       *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
     esac
   done
+
+  banner
 
   if [ "$LOCAL" = 1 ]; then
     REPO=$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd)
