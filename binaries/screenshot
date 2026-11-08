@@ -3,7 +3,7 @@
 #   -s  select a region (default: whole screen)
 #   -c  copy to clipboard instead of saving
 #   -r  start/stop a screen recording (region select)
-region= copy=
+region='' copy=''
 while getopts scr opt; do
   case $opt in
     s) region=1 ;;

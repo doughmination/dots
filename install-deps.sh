@@ -85,7 +85,13 @@ arch)
         grim slurp wf-recorder firefox flatpak xdg-desktop-portal-wlr
         jq curl unzip git fontconfig base-devel rustup)
   # rustup conflicts with the rust package, and --noconfirm would abort the whole install
-  if have cargo && ! have rustup; then PKGS=("${PKGS[@]/rustup}"); PKGS=(${PKGS[@]}); fi ;;
+  if have cargo && ! have rustup; then
+    kept=()
+    for pkg in "${PKGS[@]}"; do
+      [ "$pkg" = rustup ] || kept+=("$pkg")
+    done
+    PKGS=("${kept[@]}")
+  fi ;;
 fedora)
   PKGS=(swayfx waybar swaybg mpvpaper mpv wlsunset swayidle autotiling polkit-gnome gnome-keyring
         mako libnotify fuzzel gtklock ImageMagick kitty yazi
@@ -286,7 +292,7 @@ if [ "$SERVICES" = 1 ]; then
 fi
 
 # ---------- Summary ----------
-MISSING=($(printf '%s\n' "${MISSING[@]}" | grep -v '^$'))
+mapfile -t MISSING < <(printf '%s\n' "${MISSING[@]}" | grep -v '^$')
 step "Done"
 if [ ${#MISSING[@]} -gt 0 ]; then
   warn "Not available from your package manager: ${MISSING[*]}"
