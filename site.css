@@ -124,12 +124,13 @@ kbd {
     text-decoration: none;
 }
 
-.brand-dot {
-    width: 0.65rem;
-    height: 0.65rem;
+/* Same cyan ring the lock screen puts round the avatar */
+.brand-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid rgb(95 212 240 / 55%);
     border-radius: 50%;
-    background: var(--glow);
-    box-shadow: 0 0 10px var(--glow);
+    object-fit: cover;
 }
 
 nav {

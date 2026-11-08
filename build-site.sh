@@ -22,6 +22,9 @@ cp \
   install \
   "$OUT/"
 
+# Kept at the same path so the page works from the repo root too
+cp --parents gtklock/avatar.png "$OUT/"
+
 git archive --format=tar.gz HEAD >"$OUT/dots.tar.gz"
 (cd "$OUT" && sha256sum dots.tar.gz >dots.tar.gz.sha256)
 
