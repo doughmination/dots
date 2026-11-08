@@ -1,0 +1,58 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck the installers and scripts
+        run: shellcheck -S warning install install-*.sh binaries/*
+      - name: ShellCheck bashrc
+        run: shellcheck -S warning -s bash bashrc
+
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dry runs (no changes)
+        run: |
+          ./install --dry-run --defaults --with-sddm
+
+      - name: Install into a scratch home, then delete the clone
+        run: |
+          set -euo pipefail
+          export HOME="$RUNNER_TEMP/home" XDG_CONFIG_HOME="$RUNNER_TEMP/home/.config"
+          export PATH="$HOME/.local/bin:$PATH"
+          mkdir -p "$HOME"
+          clone="$RUNNER_TEMP/dots"
+          cp -a "$GITHUB_WORKSPACE" "$clone"
+
+          "$clone/install-config.sh"
+          "$clone/install-scripts.sh"
+
+          echo "::group::Second run must change nothing"
+          out=$("$clone/install-config.sh"; "$clone/install-scripts.sh")
+          echo "$out"
+          echo "::endgroup::"
+          if grep -q ' ! ' <<<"$out"; then
+            echo "::error::Re-running the installer moved files aside"; exit 1
+          fi
+
+          rm -rf "$clone"
+
+          broken=$(find "$HOME" -xtype l)
+          if [ -n "$broken" ]; then
+            echo "::error::Links broke after deleting the clone:"; echo "$broken"; exit 1
+          fi
+          test -f "$HOME/.bashrc"
+          test -f "$HOME/.config/sway/config"
+          test -f "$HOME/.config/waybar/config.jsonc"
+          for f in "$GITHUB_WORKSPACE"/binaries/*; do
+            test -x "$HOME/.local/bin/$(basename "$f")"
+          done
+          echo "Everything still in place without the clone."
