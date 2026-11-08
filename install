@@ -1,55 +1,132 @@
 #!/usr/bin/env bash
-# install: full setup. Runs, in order:
-#   1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
-#   2. install-git.sh     git name, email and default branch
-#   3. install-assets.sh  font and cursor themes
-#   4. install-config.sh  copy configs into ~/.config, bashrc to ~/.bashrc
-#   5. install-scripts.sh copy binaries/ into ~/.local/bin
+# install: full setup.
 #
-#   ./install                     everything
-#   ./install --dry-run           print every command without running anything
-#   --no-flatpak, --no-services   passed through to install-deps.sh
-#   --with-sddm                   also install the Clockwork login theme (install-sddm.sh)
-#   --with-sound                  turn on the background sound (install-config.sh)
-#   --git-name=, --git-email=, --git-branch=, --defaults
-#                                 passed through to install-git.sh
-#
-# Each script also works on its own. Everything is copied, so the clone can
-# be deleted afterwards.
+#   curl -fsSL https://dots.doughmination.gay/install | bash
+#   curl -fsSL https://dots.doughmination.gay/install | bash -s -- --dry-run
+#   ./install --local   use this clone instead of downloading
 
 set -uo pipefail
 
-ALL=() DEPS=() CONFIG=() GIT=() PARTS=(deps git assets config scripts)
-for arg in "$@"; do
-  case $arg in
-    --dry-run)                  ALL+=("$arg") ;;
-    --no-flatpak|--no-services) DEPS+=("$arg") ;;
-    --with-sddm)                PARTS+=(sddm) ;;
-    --with-sound)               CONFIG+=("$arg") ;;
-    --git-*=*|--defaults)       GIT+=("$arg") ;;
-    -h|--help) sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
-  esac
-done
+SITE=${DOTS_SITE:-https://dots.doughmination.gay}
 
-REPO=$(cd "$(dirname "$0")" && pwd)
-failed=()
-for part in "${PARTS[@]}"; do
-  printf '\n\e[1;35m######## install-%s ########\e[0m\n' "$part"
-  if [ "$part" = deps ]; then
-    "$REPO/install-deps.sh" "${ALL[@]}" "${DEPS[@]}" || failed+=("$part")
-  elif [ "$part" = git ]; then
-    "$REPO/install-git.sh" "${ALL[@]}" "${GIT[@]}" || failed+=("$part")
-  elif [ "$part" = config ]; then
-    "$REPO/install-config.sh" "${ALL[@]}" "${CONFIG[@]}" || failed+=("$part")
+# download <dest dir>: fetch the tarball pieces build-site.sh made, check the
+# joined tarball against its checksum, and unpack it into <dest dir>
+download() {
+  local dest=$1
+  local parts
+  local part
+
+  parts=$(curl -fsSL "$SITE/dots.parts") || return 1
+  curl -fsSL -o "$dest/dots.tar.gz.sha256" "$SITE/dots.tar.gz.sha256" || return 1
+
+  for part in $parts; do
+    echo "  $part"
+    curl -fsSL "$SITE/$part" >>"$dest/dots.tar.gz" || return 1
+  done
+
+  (cd "$dest" && sha256sum --quiet -c dots.tar.gz.sha256) || return 1
+
+  mkdir "$dest/repo"
+  tar -xzf "$dest/dots.tar.gz" -C "$dest/repo"
+}
+
+usage() {
+  cat <<'EOF'
+install: full setup. Downloads the latest dots, then runs, in order:
+  1. install-deps.sh    software (packages, rust + hyfetch, oh-my-posh, flatpaks, services)
+  2. install-git.sh     git name, email and default branch
+  3. install-assets.sh  font and cursor themes
+  4. install-config.sh  copy configs into ~/.config, bashrc to ~/.bashrc
+  5. install-scripts.sh copy binaries/ into ~/.local/bin
+  6. install-sddm.sh    the Clockwork login screen
+
+  curl -fsSL https://dots.doughmination.gay/install | bash
+  curl -fsSL https://dots.doughmination.gay/install | bash -s -- --dry-run
+
+  --local                       use the clone this script is in, don't download
+  --dry-run                     print every command without running anything
+  --no-flatpak, --no-services   passed through to install-deps.sh
+  --git-name=, --git-email=, --git-branch=, --defaults
+                                passed through to install-git.sh
+
+Everything is copied, so a clone can be deleted afterwards.
+EOF
+}
+
+# Wrapped in a function so bash reads the whole script before running any of
+# it, which matters when it's piped in from curl
+main() {
+  local LOCAL=0
+  local ALL=()
+  local DEPS=()
+  local GIT=()
+  local PARTS=(
+    deps
+    git
+    assets
+    config
+    scripts
+    sddm
+  )
+
+  for arg in "$@"; do
+    case $arg in
+      --local)                    LOCAL=1 ;;
+      --dry-run)                  ALL+=("$arg") ;;
+      --no-flatpak|--no-services) DEPS+=("$arg") ;;
+      --git-*=*|--defaults)       GIT+=("$arg") ;;
+      -h|--help) usage; exit 0 ;;
+      *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
+    esac
+  done
+
+  if [ "$LOCAL" = 1 ]; then
+    REPO=$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd)
+    if [ ! -f "$REPO/install-config.sh" ]; then
+      echo "--local needs to run from inside a clone of the dots."
+      exit 1
+    fi
   else
-    "$REPO/install-$part.sh" "${ALL[@]}" || failed+=("$part")
-  fi
-done
+    for tool in curl tar sha256sum; do
+      command -v "$tool" >/dev/null || { echo "Needs $tool to download the dots."; exit 1; }
+    done
 
-echo
-if [ ${#failed[@]} -gt 0 ]; then
-  printf '\e[1;33mFinished, but these steps reported errors: %s\e[0m\n' "${failed[*]}"
-  exit 1
-fi
-printf '\e[1;32mAll done.\e[0m Log out and back in (or reboot) to start sway with everything.\n'
+    TMP=$(mktemp -d)
+    trap 'rm -rf "$TMP"' EXIT
+
+    printf '\e[1;35mDownloading the dots from %s\e[0m\n' "$SITE"
+    if ! download "$TMP"; then
+      echo "Download failed. Check your connection, or clone the repo and use --local."
+      exit 1
+    fi
+    REPO=$TMP/repo
+  fi
+
+  # Prompts (git name, sudo, package managers) read the terminal, not the
+  # pipe from curl. No terminal at all means no prompts.
+  local input=/dev/null
+  if { : </dev/tty; } 2>/dev/null; then
+    input=/dev/tty
+  fi
+
+  local failed=()
+  local extra
+  for part in "${PARTS[@]}"; do
+    printf '\n\e[1;35m######## install-%s ########\e[0m\n' "$part"
+
+    extra=()
+    [ "$part" = deps ] && extra=("${DEPS[@]}")
+    [ "$part" = git ] && extra=("${GIT[@]}")
+
+    bash "$REPO/install-$part.sh" "${ALL[@]}" "${extra[@]}" <"$input" || failed+=("$part")
+  done
+
+  echo
+  if [ ${#failed[@]} -gt 0 ]; then
+    printf '\e[1;33mFinished, but these steps reported errors: %s\e[0m\n' "${failed[*]}"
+    exit 1
+  fi
+  printf '\e[1;32mAll done.\e[0m Log out and back in (or reboot) to start sway with everything.\n'
+}
+
+main "$@"

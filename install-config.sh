@@ -3,7 +3,6 @@
 #
 #   ./install-config.sh            copy every config folder/file into ~/.config
 #   ./install-config.sh --dry-run  print the commands without running them
-#   ./install-config.sh --with-sound  turn on the background sound in sway/config
 #
 # If the repo already *is* ~/.config there is nothing to do.
 # If you cloned it somewhere else (e.g. ~/dots), each config the .gitignore
@@ -17,8 +16,7 @@ DRY=0 SOUND=0
 for arg in "$@"; do
   case $arg in
     --dry-run) DRY=1 ;;
-    --with-sound) SOUND=1 ;;
-    -h|--help) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $arg (try --help)"; exit 1 ;;
   esac
 done
@@ -43,7 +41,7 @@ fi
 # Every "!/name" line in .gitignore is a tracked config, minus the repo's own
 # files and the assets that install-assets.sh handles.
 mapfile -t ITEMS < <(sed -n 's|^!/\([^/]*\)/\{0,1\}$|\1|p' "$REPO/.gitignore" |
-  grep -v -x -E '\.gitignore|\.github|README\.md|screenshot\.png|index\.html|site\.css|install.*|icons|binaries|sddm|bashrc')
+  grep -v -x -E '\.gitignore|\.github|README\.md|screenshot\.png|index\.html|site\.css|build-site\.sh|install.*|icons|binaries|sddm|bashrc')
 
 # place <src> <dest> <label>: copy src to dest. An old link into the repo is
 # swapped for a copy, an identical copy is left alone, anything else is

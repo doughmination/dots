@@ -1,0 +1,459 @@
+/* site.css */
+
+:root {
+    --base: #050A14;
+    --surface: #0E1828;
+    --surface-high: #1E2C42;
+    --overlay: #4A5A72;
+    --subtext: #8A9AB0;
+    --text: #E9E4DF;
+    --glow: #5FD4F0;
+    --crimson: #C8283E;
+    --gold: #D4B072;
+    --jade: #5CC8A0;
+
+    --line: rgb(95 212 240 / 14%);
+    --glow-dim: rgb(95 212 240 / 10%);
+
+    color-scheme: dark;
+    background: var(--base);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Faint glow behind the hero, like the gears in the wallpaper */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: 38rem;
+    background:
+        radial-gradient(50rem 24rem at 80% -6rem, rgb(95 212 240 / 9%), transparent 70%),
+        radial-gradient(30rem 18rem at 0% 0%, rgb(200 40 62 / 7%), transparent 70%);
+    pointer-events: none;
+}
+
+a {
+    color: var(--text);
+    text-decoration-color: rgb(95 212 240 / 50%);
+    text-underline-offset: 0.2em;
+}
+
+a:hover {
+    color: #fff;
+    text-decoration-color: var(--glow);
+}
+
+code,
+pre,
+kbd {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+}
+
+:not(pre) > code {
+    padding: 0.1em 0.35em;
+    border-radius: 0.3rem;
+    background: var(--surface);
+    color: var(--glow);
+}
+
+kbd {
+    display: inline-block;
+    padding: 0.05em 0.45em;
+    border: 1px solid var(--surface-high);
+    border-bottom-width: 2px;
+    border-radius: 0.35rem;
+    background: var(--surface);
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.wrap {
+    width: 100%;
+    max-width: 60rem;
+    margin: 0 auto;
+    padding-inline: 1.5rem;
+}
+
+.muted {
+    color: var(--subtext);
+}
+
+.small {
+    font-size: 0.875rem;
+}
+
+/* Header */
+
+.top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--line);
+    background: rgb(5 10 20 / 80%);
+    backdrop-filter: blur(10px);
+}
+
+.top-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 0.8rem;
+}
+
+.brand {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.brand-dot {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--glow);
+    box-shadow: 0 0 10px var(--glow);
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    font-size: 0.9rem;
+}
+
+nav a {
+    color: var(--subtext);
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: var(--glow);
+}
+
+/* Hero */
+
+.hero {
+    padding-block: 4.5rem 1rem;
+}
+
+.eyebrow {
+    margin: 0 0 0.5rem;
+    color: var(--glow);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(2.6rem, 8vw, 4.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+.subtitle {
+    margin: 0 0 1.25rem;
+    color: var(--subtext);
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+}
+
+.lede {
+    max-width: 36rem;
+    margin: 0 0 2.5rem;
+    color: #cfd4dc;
+}
+
+/* Same frame as the bar: thin glowing border, 16px corners */
+.shot {
+    margin: 0;
+    padding: 0.4rem;
+    border: 1px solid rgb(95 212 240 / 45%);
+    border-radius: 16px;
+    background: rgb(5 10 20 / 50%);
+    box-shadow:
+        0 0 0 4px var(--glow-dim),
+        0 30px 80px -30px rgb(0 0 0 / 80%);
+}
+
+.shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 11px;
+}
+
+/* Sections */
+
+.block {
+    padding-block: 3.5rem 0;
+}
+
+h2 {
+    margin: 0 0 1rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    margin: 2rem 0 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+p {
+    max-width: 42rem;
+}
+
+/* What's in it */
+
+.parts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--line);
+}
+
+.parts div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.parts dt {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--glow);
+    font-size: 0.92rem;
+}
+
+.parts dd {
+    margin: 0;
+}
+
+/* Palette */
+
+.palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.palette button {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.3rem 0.8rem 0.3rem 0.35rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--subtext);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.palette button::before {
+    content: '';
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid rgb(255 255 255 / 15%);
+    border-radius: 50%;
+    background: var(--swatch);
+}
+
+.palette button:hover {
+    border-color: var(--swatch);
+    color: var(--text);
+}
+
+.palette button.copied {
+    border-color: var(--jade);
+    color: var(--jade);
+}
+
+.hint {
+    margin: 0.6rem 0 0;
+    color: var(--overlay);
+    font-size: 0.8rem;
+}
+
+/* Code */
+
+pre {
+    overflow-x: auto;
+    margin: 1rem 0;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    line-height: 1.7;
+}
+
+pre .c {
+    color: var(--overlay);
+}
+
+/* Tables */
+
+.table {
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+th,
+td {
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+}
+
+tr:last-child th,
+tr:last-child td {
+    border-bottom: 0;
+}
+
+thead th {
+    background: var(--surface);
+    color: var(--subtext);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+tbody th {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+td:empty::after {
+    content: '·';
+    color: var(--surface-high);
+}
+
+/* Optional extras */
+
+.extras {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 0 2rem;
+}
+
+/* Keys */
+
+.keys {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 0 2rem;
+    margin: 1.25rem 0;
+}
+
+.keys div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-block: 0.55rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.keys dd {
+    margin: 0;
+    color: var(--subtext);
+    font-size: 0.92rem;
+}
+
+/* Tested on */
+
+.distros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.distros li {
+    padding: 0.3rem 0.85rem;
+    border: 1px dashed var(--surface-high);
+    border-radius: 999px;
+    color: var(--overlay);
+    font-size: 0.9rem;
+}
+
+.distros li.yes {
+    border: 1px solid rgb(92 200 160 / 45%);
+    color: var(--jade);
+}
+
+.distros li.yes::before {
+    content: '✓ ';
+}
+
+/* Footer */
+
+.foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    margin-top: 5rem;
+    padding-block: 1.5rem 2.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--overlay);
+    font-size: 0.85rem;
+}
+
+.foot a {
+    color: var(--subtext);
+}
+
+@media (max-width: 34rem) {
+    .parts div {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .hero {
+        padding-block: 3rem 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .palette button {
+        transition: none;
+    }
+}

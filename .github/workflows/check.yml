@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: ShellCheck the installers and scripts
-        run: shellcheck -S warning install install-*.sh binaries/*
+        run: shellcheck -S warning install install-*.sh build-site.sh binaries/*
       - name: ShellCheck bashrc
         run: shellcheck -S warning -s bash bashrc
 
@@ -21,7 +21,7 @@ jobs:
 
       - name: Dry runs (no changes)
         run: |
-          ./install --dry-run --defaults --with-sddm
+          ./install --local --dry-run --defaults
 
       - name: Install into a scratch home, then delete the clone
         run: |

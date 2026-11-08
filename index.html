@@ -1,0 +1,419 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clockwork Dots</title>
+    <meta name="description" content="Clove's swayfx dotfiles. Deep-space navy, gear cyan, crimson and gold.">
+    <meta name="theme-color" content="#050A14">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="site.css">
+</head>
+
+<body>
+    <header class="top">
+        <div class="wrap top-inner">
+            <a class="brand" href="#">
+                <span class="brand-dot" aria-hidden="true"></span>
+                dots
+            </a>
+
+            <nav>
+                <a href="#install">install</a>
+                <a href="#bar">bar</a>
+                <a href="#keys">keys</a>
+                <a href="https://github.com/doughmination/dots">github</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero wrap">
+            <p class="eyebrow">Clockwork</p>
+            <h1>Clove's dots</h1>
+            <p class="subtitle">swayfx on Void Linux, and hopefully on your distro too.</p>
+
+            <p class="lede">
+                The whole theme comes from the wallpaper: deep-space navy, glowing gear cyan,
+                crimson and gold. Bar, terminal, launcher, lock screen and login screen all match.
+            </p>
+
+            <figure class="shot">
+                <img src="screenshot.png"
+                    alt="Split view: the desktop with waybar along the top on the left, the gtklock lock screen on the right"
+                    width="1920" height="1080">
+            </figure>
+        </section>
+
+        <section class="wrap block">
+            <h2>What's in it</h2>
+
+            <dl class="parts">
+                <div>
+                    <dt>swayfx</dt>
+                    <dd>window manager, with blur, shadows and rounded corners</dd>
+                </div>
+                <div>
+                    <dt>waybar</dt>
+                    <dd>status bar</dd>
+                </div>
+                <div>
+                    <dt>kitty</dt>
+                    <dd>terminal, with an oh-my-posh prompt</dd>
+                </div>
+                <div>
+                    <dt>fuzzel</dt>
+                    <dd>app launcher</dd>
+                </div>
+                <div>
+                    <dt>mako</dt>
+                    <dd>notifications</dd>
+                </div>
+                <div>
+                    <dt>gtklock</dt>
+                    <dd>lock screen</dd>
+                </div>
+                <div>
+                    <dt>sddm</dt>
+                    <dd>login screen to match</dd>
+                </div>
+                <div>
+                    <dt>sound</dt>
+                    <dd>a looping background track, only while plugged in <span class="muted">(optional)</span></dd>
+                </div>
+                <div>
+                    <dt>cursor</dt>
+                    <dd>sandrone-linux, which I made myself</dd>
+                </div>
+            </dl>
+
+            <div class="palette" aria-label="Colour palette">
+                <button type="button" style="--swatch: #050A14" data-hex="#050A14">base</button>
+                <button type="button" style="--swatch: #1E2C42" data-hex="#1E2C42">surface</button>
+                <button type="button" style="--swatch: #5FD4F0" data-hex="#5FD4F0">glow</button>
+                <button type="button" style="--swatch: #4A8FE0" data-hex="#4A8FE0">blue</button>
+                <button type="button" style="--swatch: #C8283E" data-hex="#C8283E">crimson</button>
+                <button type="button" style="--swatch: #D7718F" data-hex="#D7718F">rose</button>
+                <button type="button" style="--swatch: #D4B072" data-hex="#D4B072">gold</button>
+                <button type="button" style="--swatch: #5CC8A0" data-hex="#5CC8A0">jade</button>
+                <button type="button" style="--swatch: #E9E4DF" data-hex="#E9E4DF">text</button>
+            </div>
+            <p class="hint">Click a colour to copy it.</p>
+        </section>
+
+        <section class="wrap block" id="install">
+            <h2>Install</h2>
+
+            <p>
+                One line. It grabs the latest version, copies everything into place
+                and cleans up after itself. Re-run it any time to update.
+            </p>
+
+            <pre><code>curl -fsSL https://dots.doughmination.gay/install | bash
+<span class="c"># or see what it'll do first</span>
+curl -fsSL https://dots.doughmination.gay/install | bash -s -- --dry-run</code></pre>
+
+            <p>Rather work from a clone?</p>
+
+            <pre><code>git clone https://github.com/doughmination/dots
+cd dots
+bash install --local</code></pre>
+
+            <p>
+                On Arch, anything missing from the repos comes from the AUR with yay or paru
+                (paru gets installed if you have neither). Anything already in the way is renamed
+                to <code>.bak-&lt;date&gt;</code>, never deleted.
+            </p>
+
+            <h3>The six parts</h3>
+            <p>The installer runs these in order. Each one works on its own too.</p>
+
+            <div class="table">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th><code>install-deps.sh</code></th>
+                            <td>The software. <code>--no-flatpak</code> or <code>--no-services</code> skip those bits.
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><code>install-git.sh</code></th>
+                            <td>Your git name, email and default branch.</td>
+                        </tr>
+                        <tr>
+                            <th><code>install-assets.sh</code></th>
+                            <td>The font and the cursor.</td>
+                        </tr>
+                        <tr>
+                            <th><code>install-config.sh</code></th>
+                            <td>Configs into <code>~/.config</code>, and <code>bashrc</code> to <code>~/.bashrc</code>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><code>install-scripts.sh</code></th>
+                            <td>Helper scripts into <code>~/.local/bin</code>.</td>
+                        </tr>
+                        <tr>
+                            <th><code>install-sddm.sh</code></th>
+                            <td>The login screen.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="extras">
+                <div>
+                    <h3>Login screen</h3>
+                    <p>The installer always sets up the SDDM theme. From a clone you can tweak or undo it:</p>
+                    <pre><code>./install-sddm.sh
+<span class="c"># still wallpaper instead of the video</span>
+./install-sddm.sh --no-video
+<span class="c"># put your old sddm.conf back</span>
+./install-sddm.sh --uninstall</code></pre>
+                </div>
+
+                <div>
+                    <h3>Background sound</h3>
+                    <p>Off by default. To turn it on, edit <code>~/.config/sway/config</code> and reload.
+                        Re-installing keeps it on.</p>
+                    <pre><code>set $ambient_sound on
+set $ambient_volume 30</code></pre>
+                    <p><kbd>Super</kbd>+<kbd>M</kbd> mutes it until the next reload.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="wrap block" id="bar">
+            <h2>The bar</h2>
+            <p>Most of waybar is clickable.</p>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Left</th>
+                            <th>Middle</th>
+                            <th>Right</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Battery</th>
+                            <td>Power saver on/off</td>
+                            <td>Pick a power profile</td>
+                            <td>Performance on/off</td>
+                        </tr>
+                        <tr>
+                            <th>Clock</th>
+                            <td>This month's calendar</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Brightness</th>
+                            <td>Toggle 15% / 100%</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Network</th>
+                            <td>Wi-Fi on/off</td>
+                            <td></td>
+                            <td>nmtui</td>
+                        </tr>
+                        <tr>
+                            <th>Bluetooth</th>
+                            <td>Bluetooth on/off</td>
+                            <td>bluetui</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Volume</th>
+                            <td>Mute</td>
+                            <td>pavucontrol</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>CPU / RAM</th>
+                            <td>btop</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Picture</th>
+                            <td>Still / animated wallpaper</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Coffee cup</th>
+                            <td>Stay awake</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Moon</th>
+                            <td>Night light</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Bell</th>
+                            <td>Notification list</td>
+                            <td></td>
+                            <td>Do not disturb</td>
+                        </tr>
+                        <tr>
+                            <th>Package</th>
+                            <td>Run the update</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>REC</th>
+                            <td>Stop recording</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="muted small">
+                The animated wallpaper pauses in power saver, or when the battery's at 20% or less.
+                The package and REC icons only show up when there's something to do.
+            </p>
+        </section>
+
+        <section class="wrap block" id="keys">
+            <h2>Keys</h2>
+            <p>
+                <kbd>Super</kbd>+<kbd>/</kbd> searches every shortcut, and picking one runs it.
+                These are the ones I actually use:
+            </p>
+
+            <dl class="keys">
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>Return</kbd></dt>
+                    <dd>terminal</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>Space</kbd></dt>
+                    <dd>launcher</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>Q</kbd></dt>
+                    <dd>close window</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>F</kbd></dt>
+                    <dd>firefox</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>E</kbd></dt>
+                    <dd>files (yazi)</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>V</kbd></dt>
+                    <dd>clipboard history</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>N</kbd></dt>
+                    <dd>last notification</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>B</kbd></dt>
+                    <dd>hide the bar</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>W</kbd></dt>
+                    <dd>float window</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>R</kbd></dt>
+                    <dd>resize mode</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>1</kbd>…<kbd>9</kbd></dt>
+                    <dd>workspace (add <kbd>Alt</kbd> to move the window there)</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>Alt</kbd>+<kbd>L</kbd></dt>
+                    <dd>lock</dd>
+                </div>
+                <div>
+                    <dt><kbd>Print</kbd></dt>
+                    <dd>screenshot to clipboard (<kbd>Ctrl</kbd>+<kbd>Shift</kbd> for a region)</dd>
+                </div>
+                <div>
+                    <dt><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Print</kbd></dt>
+                    <dd>record the screen</dd>
+                </div>
+                <div>
+                    <dt><kbd>Super</kbd>+<kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></dt>
+                    <dd>previous, play/pause, next</dd>
+                </div>
+                <div>
+                    <dt><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Delete</kbd></dt>
+                    <dd>power menu</dd>
+                </div>
+            </dl>
+
+            <p class="muted small">
+                The full list is in the
+                <a href="https://github.com/doughmination/dots#keybindings">README</a>.
+            </p>
+        </section>
+
+        <section class="wrap block">
+            <h2>Tested on</h2>
+
+            <ul class="distros">
+                <li class="yes">Void Linux (glibc)</li>
+                <li class="yes">Arch Linux</li>
+                <li>Debian</li>
+                <li>Ubuntu</li>
+                <li>Fedora</li>
+                <li>NixOS</li>
+            </ul>
+
+            <p class="muted small">
+                The rest should mostly work. If one breaks,
+                <a href="https://github.com/doughmination/dots/issues">open an issue</a>.
+            </p>
+        </section>
+    </main>
+
+    <footer class="wrap foot">
+        <span>Clove Twilight &copy; 2026</span>
+        <span>The wallpaper isn't mine, I found it online. Everything else is.</span>
+        <a href="https://doughmination.gay">doughmination.gay</a>
+    </footer>
+
+    <script>
+        for (const swatch of document.querySelectorAll('.palette button')) {
+            swatch.addEventListener('click', async () => {
+                const hex = swatch.dataset.hex
+
+                try {
+                    await navigator.clipboard.writeText(hex)
+                } catch {
+                    return
+                }
+
+                swatch.classList.add('copied')
+                setTimeout(() => swatch.classList.remove('copied'), 1200)
+            })
+        }
+    </script>
+</body>
+
+</html>
